@@ -1,0 +1,49 @@
+<app-preview-header></app-preview-header>
+<section class="image-editor-section">
+  <div class="container">
+    <div class="row mar-row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-7 col-md-offset-2">
+            <div class="img-editor">
+              <div class="placer">
+                <div class="placeholders">
+                  <input type="file" #imageUpload style="opacity: 0;" (change)="readURL($event);">
+                  <img *ngIf="previewImg" class="img-placeholder" (click)="imageUpload.click()" src="../../../assets/images/placeholder.png" alt="">
+                  <img *ngIf="uploadedImg" [src]="imageSrc" class="image-uploaded" id="img">
+                  <div class="dropdown" *ngIf="uploadedImg">
+                    <button class="btn btn-primary btn-z dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-angle-down"></i>
+                      </button>
+                    <ul class="dropdown-menu dm">
+                      <li><a routerLink="/photoeditor">Edit</a></li>
+                      <li><a >Zoom</a></li>
+                      <li><a (click)="remImg()">Remove</a></li>
+                    </ul>
+                    <div class="lk">
+                      <button (click)="resize(1)"><i class="fa fa-plus"></i></button>
+                      <button (click)="resize(-1)"><i class="fa fa-minus"></i></button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="preview">
+              <h3>Photo Mug</h3>
+              <h4> A mug for every reason</h4>
+              <h4>Qty: 1</h4>
+              <h2><i class="fa fa-inr"></i> 299</h2>
+              <div class="he"></div>
+              <div class="buttons">
+              <button class="btn btn-preview">Preview</button>
+              <button class="btn btn-cart">Add To Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

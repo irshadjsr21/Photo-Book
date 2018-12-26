@@ -1,0 +1,147 @@
+.img-editor{
+  height: 500px;
+  width: 100%;
+  background: #5a5a5a;
+  position: relative;
+  border: 2px dotted #ccc;
+}
+
+.image-editor-section{
+  height: auto;
+  padding: 40px 0px;
+
+}
+
+
+.placer{
+  height: 300px;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top:0px;
+  bottom: 0px;
+  margin: auto;
+  background-image: url("https://fbcd.co/images/products/a765994bd870df31004c94e932e563b3_resize.jpg");
+  background-position: center right;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-color: #fff;
+}
+
+.img-placeholder{
+  cursor: pointer;
+  height: 240px;
+  position: absolute;
+  left: 40px;
+}
+
+.preview{
+  height: 530px;
+  width: 100%;
+  background: #eaeaea;
+  position: absolute;
+  left: -30px;
+  top: -15px;
+  padding: 25px;
+
+  h3{
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  h4{
+    font-weight: normal;
+  }
+
+  p{
+    font-weight: normal;
+  }
+
+  h2{
+    font-weight: normal;
+  }
+}
+
+.he{
+  height: 10px;
+}
+
+
+.btn-preview{
+  background: #ffdc00;
+  color: #fff;
+  font-size: 18px;
+  padding: 8px 15px;
+  color: #000;
+  letter-spacing: 0.5px;
+  border-radius: 0px;
+  border: 2px solid #ffdc00;
+  transition: all .2s ease-in-out;
+  &:hover{
+    background: #fff;
+    border: 2px solid #ffdc00;
+    transform: scale(1.1);
+  }
+}
+
+
+.btn-cart{
+  background: #fff;
+  color: #ffdc00;
+  font-size: 18px;
+  padding: 8px 15px;
+  color: #000;
+  letter-spacing: 0.5px;
+  border-radius: 0px;
+  border: 2px solid #ffdc00;
+  transition: all .2s ease-in-out;
+  &:hover{
+    background: #fff;
+    border: 2px solid #ffdc00;
+    transform: scale(1.1);
+  }
+}
+
+.buttons{
+  position: absolute;
+  bottom: 50px;
+}
+
+
+.image-uploaded{
+  cursor: pointer;
+  height: 240px;
+  position: absolute;
+  left: 40px;
+  width: 350px;
+  object-fit: cover;
+}
+
+.btn-z{
+  background: #ffd700;
+  border: none;
+  position: absolute;
+  left: 340px;
+  color: #000;
+  top: 10px;
+}
+
+.dm{
+  background: #ffd700;
+  border: none;
+  position: absolute;
+  left: 340px;
+  color: #000;
+  top: 10px;
+  opacity: 0.7;
+}
+
+.lk{
+  position: absolute;
+  bottom: -230px;
+  right: 265px;
+
+}
+
+
+

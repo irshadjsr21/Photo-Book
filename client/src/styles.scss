@@ -1,0 +1,257 @@
+/* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: primaryBold;
+  src: url('assets/fonts/OpenSans-Bold.ttf');
+}
+
+@font-face {
+  font-family: primaryLight;
+  src: url('assets/fonts/OpenSans-Light.ttf');
+}
+
+
+@font-face {
+  font-family: primaryRegular;
+  src: url('assets/fonts/OpenSans-Regular.ttf');
+}
+
+
+@font-face {
+  font-family: primaryMedium;
+  src: url('assets/fonts/OpenSans-Semibold.ttf');
+}
+
+$primaryfont: 'Roboto Slab', serif;
+
+
+
+
+.custom-brand{
+  padding: 8px 15px;
+}
+
+.img-height-logo{
+  height: 30px;
+}
+
+.nav-cus{
+  background: #fff;
+  margin-bottom: 0px;
+  border-radius: 0px;
+  border: none!important;
+  border-bottom: 1px solid #efefef!important;
+}
+.nav-cus2{
+  background: #fff;
+  margin-bottom: 0px;
+  border-radius: 0px;
+  border: none!important;
+  border-bottom: 1px solid #efefef!important;
+  padding: 10px 0px;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: #2b2b2b;
+  font-family: primaryLight;
+  margin-right: 2px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+  color: #c1c1c1!important;
+  background-color: transparent;
+}
+
+.cart-icon{
+  height: 30px;
+  width: 30px;
+  border: 1px solid #dcdcdc;
+  border-radius: 50%;
+  padding: 6px;
+  position: absolute;
+  top: 10px;
+  color: #ea8431;
+}
+
+.zx{
+  padding-left: 5px;
+  margin-right: 15px;
+
+}
+
+.navbar-collapse {
+  padding-left: 0px;
+}
+
+.mid{
+  height: 380px;
+  background: url("https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/product/poster/individualProduct/banner/poster_banner");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.mid-mug{
+  height: 380px;
+  background: url("https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/banners/banner-mug-category-web.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.mob-cover{
+  padding: 40px 0px;
+  height: auto;
+}
+
+.box{
+  margin: 15px 0px;
+  height: 540px;
+  border: 1px solid #e4e8e3;
+}
+
+.mt{
+  margin-top: 20px;
+}
+
+.img-box{
+  height: 380px;
+  width: 100%;
+  object-fit: cover;
+}
+
+.img-s{
+  padding: 15px;
+  height: 380px;
+  object-fit: contain;
+  border-bottom: 1px solid #ececec;
+}
+
+.set-rs{
+  margin: 10px 20px;
+  font-family: $primaryfont;
+}
+
+.btn-explore{
+  background: #ffdc00;
+  color: #fff;
+  font-size: 18px;
+  padding: 8px 30px;
+  color: #000;
+  letter-spacing: 0.5px;
+  border-radius: 0px;
+  border: 2px solid #ffdc00;
+  transition: all .2s ease-in-out;
+  &:hover{
+    background: #fff;
+    border: 2px solid #ffdc00;
+    transform: scale(1.1);
+  }
+}
+
+.footer{
+  padding: 40px 0px;
+  height: auto;
+  background: #fbfbfb;
+}
+
+.youro{
+  letter-spacing: 0.5px;
+  color: #2b2b2b;
+  line-height: 1.5;
+}
+
+.first-footer-list{
+  padding-left: 0px;
+  li{
+    list-style: none;
+     margin: 20px 0px;
+     font-size: 16px;
+     cursor:pointer;
+     color: #2a2a2a;
+
+    &:hover{
+      color: #000000;
+    }
+  }
+}
+
+.megafooter{
+  padding: 40px 0px;
+  height: auto;
+
+}
+
+.social-li{
+  padding-left: 0px;
+
+  li{
+    list-style: none;
+    display: inline-block;
+    margin-right: 20px;
+    font-size: 18px;
+  }
+}
+.main-heading{
+
+   font-family: $primaryfont;
+  &:hover{
+    cursor: pointer;
+    text-decoration: underline;
+    color: #000;
+  }
+}
+.text{
+  padding: 40px 0px;
+  height: auto;
+}
+
+.youro1{
+  font-size: 20px;
+}
+
+h4{
+  font-family: $primaryfont;
+}
+
+p{
+  font-family: $primaryfont;
+}
+
+.he{
+  height: 20px;
+}
+
+
+.yougrapy{
+  background: #f9f9f8;
+  padding: 40px 0px;
+}
+
+.yougrapy-happy{
+  background: #fff;
+  padding: 40px 0px;
+}
+
+.text-bold{
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.text-bold2{
+  font-weight: bold;
+  font-size: 32px;
+  font-family: $primaryfont;
+}
+
+
+.selfies{
+  font-size: 18px;
+  font-weight: normal;
+}
+
+h3{
+  font-family: $primaryfont;
+}
