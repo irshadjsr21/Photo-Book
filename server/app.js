@@ -9,6 +9,7 @@ const sequelize = require('./utils/database');
 
 // Importing Models
 const User = require('./models/user');
+const Admin = require('./models/admin');
 
 // Importing Routers
 const authRouter = require('./routes/auth');
@@ -26,7 +27,7 @@ const app = express();
 app.use(initialMiddlewares);
 
 // Setting up Routes
-app.use(authRouter);
+app.use('/api', authRouter);
 
 // Page not Found Error
 app.use((req, res) => {
@@ -47,6 +48,21 @@ app.use((error, req, res, next) => {
 sequelize.sync()
     .then(() => {
         // Starting the server
+        return Admin.findAll();
+        
+    })
+    .then(admins => {
+        if(admins.length === 0) {
+            const admin = new Admin({
+                fullName: config.ADMIN.NAME,
+                email: config.ADMIN.EMAIL,
+                password: config.ADMIN.PASSWORD
+            });
+            return admin.save();
+        }
+        return;
+    })
+    .then(() => {
         app.listen(PORT, () => {
             console.log('Server Started on PORT : ' + PORT);
         });
