@@ -12,7 +12,7 @@ const User = require('./models/user');
 const Admin = require('./models/admin');
 
 // Importing Routers
-const authRouter = require('./routes/auth');
+const routers = require('./routes/index');
 
 // Importing Middlewares
 const initialMiddlewares = require('./middlewares/initial');
@@ -27,7 +27,7 @@ const app = express();
 app.use(initialMiddlewares);
 
 // Setting up Routes
-app.use('/api', authRouter);
+app.use('/api', routers);
 
 // Page not Found Error
 app.use((req, res) => {
