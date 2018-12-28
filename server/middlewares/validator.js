@@ -31,3 +31,25 @@ module.exports.userLogin = [
         .isEmpty()
         .withMessage('Password is Required')
 ]
+
+module.exports.mugCategory = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required')
+]
+
+module.exports.mug = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required'),
+    body('whitePrice')
+        .not()
+        .isEmpty()
+        .withMessage('Price is Required'),
+    body('blackPrice')
+        .not()
+        .isEmpty()
+        .withMessage('Price is Required')
+]
