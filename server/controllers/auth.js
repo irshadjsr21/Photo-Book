@@ -121,3 +121,128 @@ module.exports.login = (req, res, next) => {
             next(error);
         });
 }
+
+// Get User Profile
+module.exports.getProfile = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
+
+    // Find User
+    User.findByPk(req.user.id, { attributes: ['id', 'fullName', 'email', 'mobile', 'createdAt', 'updatedAt'] }) 
+        .then(user => {
+            if(!user) {
+                return res.status(404).json({
+                    msg: ['No User Found']
+                });
+            }
+
+            res.json({
+                result: user
+            });
+        })
+        .catch(error => {
+            next(error);
+        });
+}
+
+
+// Update User Profile
+module.exports.putProfile = (req, res, next) => {
+
+    if(!req.user) {
+        return;
+    }
+
+    const userInput = {
+        fullName: req.body.fullName,
+        email: req.body.email,
+        mobile: req.body.mobile
+    };
+
+    // Extracting Validation Errors from Express Validator
+    const validationError = validationResult(req).array();
+
+    // If Validation Error Exists => Show Error Message
+    if(validationError.length > 0) {
+        let errors = validationError.map(obj => obj.msg);
+        return res.status(422).json({
+            msg: errors
+        });
+    }
+
+    // Find User
+    User.findByPk(req.user.id) 
+        .then(user => {
+            if(!user) {
+                return res.status(404).json({
+                    msg: ['No User Found']
+                });
+            }
+
+            for(const key in userInput) {
+                user[key] = userInput[key];
+            }
+
+            user.save()
+                .then(() => {
+                    res.json({
+                        msg: ['User Profile Edited Successfully']
+                    });
+                })
+                .catch(error => {
+                    next(error);
+                });
+        })
+        .catch(error => {
+            next(error);
+        });
+}
+
+// Handles Change Password
+module.exports.changePassword = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
+
+    // Extracting Validation Errors from Express Validator
+    const validationError = validationResult(req).array();
+
+    // If Validation Error Exists => Show Error Message
+    if(validationError.length > 0) {
+        let errors = validationError.map(obj => obj.msg);
+        return res.status(422).json({
+            msg: errors
+        });
+    }
+
+    let fetchedUser;
+
+    // Find User
+    User.findByPk(req.user.id, { attributes: ['id', 'password'] })
+        .then(user => {
+            fetchedUser = user;
+            return user.checkPassword(req.body.password);
+        })
+        .then(isMatch => {
+            if(isMatch) {
+                fetchedUser.password = req.body.newPassword;
+                fetchedUser.save()
+                    .then(() => {
+                        res.json({
+                            msg: ['Password Changed Successfully']
+                        });
+                    })
+                    .catch(error => {
+                        next(error);
+                    });
+            } else {
+                res.status(422).json({
+                    msg: ['Incorrect Password']
+                });
+            }
+        })
+        .catch(error => {
+            next(error);
+        });
+}

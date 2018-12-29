@@ -3,7 +3,10 @@ const { validationResult } = require('express-validator/check');
 
 // Add Mug Category
 module.exports.postMugCategory = (req, res, next) => {
-
+    if(!req.user) {
+        return;
+    }
+    
     const userInput = {
         name: req.body.name
     };
@@ -35,6 +38,9 @@ module.exports.postMugCategory = (req, res, next) => {
 
 // Returns Mug Categories
 module.exports.getMugCategory = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
 
     // Find All Mug Categories
     MugCategory.findAll()
@@ -50,6 +56,9 @@ module.exports.getMugCategory = (req, res, next) => {
 
 // Deletes Mug Category
 module.exports.deleteMugCategory = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
 
     const id = req.params.id;
 
@@ -79,6 +88,9 @@ module.exports.deleteMugCategory = (req, res, next) => {
 
 // Edit Mug Category
 module.exports.putMugCategory = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
     
     const id = req.params.id;
 

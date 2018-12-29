@@ -13,6 +13,7 @@ const User = require('./models/user');
 const Admin = require('./models/admin');
 const Mug = require('./models/mug');
 const MugCategory = require('./models/mugCategory');
+const Gallary = require('./models/gallary');
 
 // Importing Routers
 const routers = require('./routes/index');
@@ -52,6 +53,7 @@ app.use((error, req, res, next) => {
 
 // Database Relations
 Mug.belongsTo(MugCategory);
+Gallary.belongsTo(User);
 
 // Connecting to Database
 sequelize.sync()

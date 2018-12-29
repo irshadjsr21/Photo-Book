@@ -4,6 +4,9 @@ const { validationResult } = require('express-validator/check');
 
 // Add Mug Category
 module.exports.postMug = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
 
     if(!req.file) {
         return res.status(422).json({
@@ -58,7 +61,10 @@ module.exports.postMug = (req, res, next) => {
 
 // Returns Mug
 module.exports.getMug = (req, res, next) => {
-
+    if(!req.user) {
+        return;
+    }
+    
     const options = {}; 
     if(req.query.id) {
         options.id = req.query.id;
@@ -80,6 +86,9 @@ module.exports.getMug = (req, res, next) => {
 
 // Deletes Mug
 module.exports.deleteMug = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
 
     const id = req.params.id;
 
@@ -109,6 +118,9 @@ module.exports.deleteMug = (req, res, next) => {
 
 // Edit Mug
 module.exports.putMug = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
     
     const id = req.params.id;
 
