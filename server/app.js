@@ -1,5 +1,6 @@
 // Importing Modules
 const express = require('express');
+const path = require('path');
 
 // Importing Config File
 const config = require('./utils/config');
@@ -10,6 +11,9 @@ const sequelize = require('./utils/database');
 // Importing Models
 const User = require('./models/user');
 const Admin = require('./models/admin');
+const Mug = require('./models/mug');
+const MugCategory = require('./models/mugCategory');
+const Gallary = require('./models/gallary');
 
 // Importing Routers
 const routers = require('./routes/index');
@@ -22,6 +26,9 @@ const PORT = process.env.PORT || 3000;
 
 // Initializing app
 const app = express();
+
+// Setting Public Folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Setting Middlewares
 app.use(initialMiddlewares);
@@ -43,6 +50,10 @@ app.use((error, req, res, next) => {
         msg: ['Some Internal Error Occured']
     });
 });
+
+// Database Relations
+Mug.belongsTo(MugCategory);
+Gallary.belongsTo(User);
 
 // Connecting to Database
 sequelize.sync()

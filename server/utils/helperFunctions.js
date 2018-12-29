@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
+const path = require('path');
+const fs = require('fs');
 
 // To Encrypt Password
 module.exports.encryptPass = (user) => {
@@ -39,4 +41,13 @@ module.exports.signJwt = async (id, role = 'user', cb) => {
             return cb(null, token);
         }
     });
+}
+
+module.exports.deleteImage = (url) => {
+    const imagePath = path.join(__dirname, '../', 'public', url);
+    fs.unlink(imagePath, (error) => {
+        if(error) {
+            console.log(error);
+        }
+    })
 }
