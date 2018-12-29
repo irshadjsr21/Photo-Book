@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-
+import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
+import { ApiServiceService } from './service/api-service.service';
 import { AppComponent } from './app.component';
 import { LandingComponent } from './components/landing/landing.component';
 import { MugsComponent } from './components/mugs/mugs.component';
@@ -50,10 +51,12 @@ const appRoutes: Routes = [
     PhotoeditorComponent,
   ],
   imports: [
+    HttpModule,
     BrowserModule,
+    FormsModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [ApiServiceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -2,7 +2,7 @@ module.exports = {
     DB: {
         DB_NAME: 'photoBook',
         USER: 'root',
-        PASSWORD: 'password',
+        PASSWORD: '',
         PORT: 3306,
         HOST: 'localhost'
     },
