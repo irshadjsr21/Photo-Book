@@ -18,6 +18,7 @@ module.exports = (req, res, next) => {
             }
         }
         catch(error){
+            req.user = null;
             next();
         }
     }    
