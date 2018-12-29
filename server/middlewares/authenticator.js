@@ -11,7 +11,7 @@ module.exports = (role) => {
             next();
         }
         else{
-            res.status(401).json({
+            return res.status(401).json({
                 msg: [
                     "Unauthorized User"
                 ]
