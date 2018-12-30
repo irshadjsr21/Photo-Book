@@ -14,6 +14,7 @@ const Admin = require('./models/admin');
 const Mug = require('./models/mug');
 const MugCategory = require('./models/mugCategory');
 const Gallary = require('./models/gallary');
+const Address = require('./models/address');
 
 // Importing Routers
 const routers = require('./routes/index');
@@ -54,6 +55,8 @@ app.use((error, req, res, next) => {
 // Database Relations
 Mug.belongsTo(MugCategory);
 Gallary.belongsTo(User);
+Address.hasOne(User, { foreignKey: 'deliveryAddressId' });
+Address.hasOne(User, { foreignKey: 'billingAddressId' });
 
 // Connecting to Database
 sequelize.sync()
