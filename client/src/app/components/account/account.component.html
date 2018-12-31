@@ -32,110 +32,6 @@
     </div>
     <div class="col-md-1" style="width: 0%;">
     </div>
-    <div *ngIf="isTab == 2" class="col-md-8 col-sm-8 dashboard-tabs">
-      <div class="row">
-        <div class="head">
-          <h3 class="address-book-title">Address</h3>
-        </div>
-        <div class="col-md-12" style="margin-top:10px;margin-bottom:25px">
-          <h3 class="address-book-title">DELIVERY ADDRESS</h3>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" [(ngModel)]="deliveryAddress.name" name="fullname" class="form-control custom-input" placeholder="Enter your full name">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Address 1</label>
-            <input type="text" [(ngModel)]="deliveryAddress.address1" name="address1" class="form-control custom-input" placeholder="Enter address line 1">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Address 2</label>
-            <input type="text" [(ngModel)]="deliveryAddress.address2" name="address2" class="form-control custom-input" placeholder="Enter address line 2">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>State</label>
-            <input type="text" [(ngModel)]="deliveryAddress.state" name="state" class="form-control custom-input" placeholder="Enter your state">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>City</label>
-            <input type="text" [(ngModel)]="deliveryAddress.city" name="city" class="form-control custom-input" placeholder="Enter your city">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Pin code</label>
-            <input type="text" [(ngModel)]="deliveryAddress.pincode" name="pincode" class="form-control custom-input" placeholder="Enter your pincode">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <input type="checkbox" name="samsas"> USE THE SAME ADDRESS AS BILLING ADDRESS
-          </div>
-        </div>
-        <div class="col-md-12" style="text-align: right;">
-          <div class="form-group">
-            <button (click)="saveDeliveryAddress()" class="btn btn-primary">Update</button>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <hr style="padding: 0;
-          margin: 0;" />
-        </div>
-        <div class="col-md-12" style="margin-top:10px;margin-bottom:25px">
-          <h3 class="address-book-title">BILLING ADDRESS</h3>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" [(ngModel)]="billingAddress.name" name="fullname1" class="form-control custom-input" placeholder="Enter your full name">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Address 1</label>
-            <input type="text" [(ngModel)]="billingAddress.address1" name="address11" class="form-control custom-input" placeholder="Enter address line 1">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Address 2</label>
-            <input type="text" [(ngModel)]="billingAddress.address2" name="address21" class="form-control custom-input" placeholder="Enter address line 2">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>State</label>
-            <input type="text" [(ngModel)]="billingAddress.state" name="state1" class="form-control custom-input" placeholder="Enter your state">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>City</label>
-            <input type="text" [(ngModel)]="billingAddress.city" name="city1" class="form-control custom-input" placeholder="Enter your city">
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group">
-            <label>Pin code</label>
-            <input type="text" [(ngModel)]="billingAddress.pincode" name="pincode1" class="form-control custom-input" placeholder="Enter your pincode">
-          </div>
-        </div>
-        <div class="col-md-12" style="text-align: right;">
-          <div class="form-group">
-            <button (click)="saveBillingAddress()" class="btn btn-primary">Update</button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div *ngIf="isTab == 1" class="col-md-8 col-sm-8 dashboard-tabs">
       <div class="row">
         <div class="head">
@@ -235,5 +131,140 @@
         </div>
       </div>
     </div>
+    <div *ngIf="isTab == 2" class="col-md-8 col-sm-8 dashboard-tabs">
+      <div class="row">
+        <div class="head">
+          <h3 class="address-book-title">Address</h3>
+        </div>
+        <div class="col-md-12" style="margin-top:10px;margin-bottom:25px">
+          <h3 class="address-book-title">DELIVERY ADDRESS</h3>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" [(ngModel)]="deliveryAddress.name" name="fullname" class="form-control custom-input" placeholder="Enter your full name">
+            <div class="error-list" *ngIf="isError2 && isInValid(deliveryAddress.name)">
+              You must include your full name.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Address 1</label>
+            <input type="text" [(ngModel)]="deliveryAddress.address1" name="address1" class="form-control custom-input" placeholder="Enter address line 1">
+            <div class="error-list" *ngIf="isError2 && isInValid(deliveryAddress.address1)">
+              Please provide a valid address.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Address 2</label>
+            <input type="text" [(ngModel)]="deliveryAddress.address2" name="address2" class="form-control custom-input" placeholder="Enter address line 2">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" [(ngModel)]="deliveryAddress.state" name="state" class="form-control custom-input" placeholder="Enter your state">
+            <div class="error-list" *ngIf="isError2 && isInValid(deliveryAddress.state)">
+              Please select state.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="deliveryAddress.city" name="city" class="form-control custom-input" placeholder="Enter your city">
+            <div class="error-list" *ngIf="isError2 && isInValid(deliveryAddress.city)">
+              Please provide a valid city.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Pin code</label>
+            <input type="text" [(ngModel)]="deliveryAddress.pincode" name="pincode" class="form-control custom-input" placeholder="Enter your pincode">
+            <div class="error-list" *ngIf="isError2 && isInValid(deliveryAddress.pincode)">
+              Please provide a valid pincode.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <input type="checkbox" name="samsas"> USE THE SAME ADDRESS AS BILLING ADDRESS
+          </div>
+        </div>
+        <div class="col-md-12" style="text-align: right;">
+          <div class="form-group">
+            <button (click)="saveDeliveryAddress()" class="btn btn-primary">Update</button>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <hr style="padding: 0;
+          margin: 0;" />
+        </div>
+        <div class="col-md-12" style="margin-top:10px;margin-bottom:25px">
+          <h3 class="address-book-title">BILLING ADDRESS</h3>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" [(ngModel)]="billingAddress.name" name="fullname1" class="form-control custom-input" placeholder="Enter your full name">
+            <div class="error-list" *ngIf="isError3 && isInValid(billingAddress.name)">
+              You must include your full name.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Address 1</label>
+            <input type="text" [(ngModel)]="billingAddress.address1" name="address11" class="form-control custom-input" placeholder="Enter address line 1">
+            <div class="error-list" *ngIf="isError3 && isInValid(billingAddress.address1)">
+              Please provide a valid address.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Address 2</label>
+            <input type="text" [(ngModel)]="billingAddress.address2" name="address21" class="form-control custom-input" placeholder="Enter address line 2">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>State</label>
+            <input type="text" [(ngModel)]="billingAddress.state" name="state1" class="form-control custom-input" placeholder="Enter your state">
+            <div class="error-list" *ngIf="isError3 && isInValid(billingAddress.state)">
+              Please select state.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" [(ngModel)]="billingAddress.city" name="city1" class="form-control custom-input" placeholder="Enter your city">
+            <div class="error-list" *ngIf="isError3 && isInValid(billingAddress.city)">
+              Please provide a valid city.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Pin code</label>
+            <input type="text" [(ngModel)]="billingAddress.pincode" name="pincode1" class="form-control custom-input" placeholder="Enter your pincode">
+            <div class="error-list" *ngIf="isError3 && isInValid(billingAddress.pincode)">
+              Please provide a valid pincode.
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12" style="text-align: right;">
+          <div class="form-group">
+            <button (click)="saveBillingAddress()" class="btn btn-primary">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </div>
 </div>

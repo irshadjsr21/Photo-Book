@@ -146,10 +146,24 @@ export class AccountComponent implements OnInit {
     let params = {};
     this.httpService.get('api/address',params).subscribe(res => {
       if (res.result) {
-          let item = res.result; 
-          // this.accountInfo.fullName = item.fullName;
-          // this.accountInfo.email = item.email;
-          // this.accountInfo.mobile = item.mobile;
+          let itemDelivery = res.result.deliveryAddress;
+          let itemBilling = res.result.billingAddress;
+          if(itemDelivery != null){
+              this.deliveryAddress.name = itemDelivery.name;
+              this.deliveryAddress.address1 = itemDelivery.address1;
+              this.deliveryAddress.address2 = itemDelivery.address2;
+              this.deliveryAddress.state = itemDelivery.state;
+              this.deliveryAddress.city = itemDelivery.city;
+              this.deliveryAddress.pincode = itemDelivery.pincode;
+          }
+          if(itemBilling != null){
+            this.billingAddress.name = itemBilling.name;
+            this.billingAddress.address1 = itemBilling.address1;
+            this.billingAddress.address2 = itemBilling.address2;
+            this.billingAddress.state = itemBilling.state;
+            this.billingAddress.city = itemBilling.city;
+            this.billingAddress.pincode = itemBilling.pincode;
+          } 
       }
     },error=>{
       this.isError2 = true;
@@ -160,6 +174,18 @@ export class AccountComponent implements OnInit {
   }
 
   saveDeliveryAddress(){
+    this.isError2 = false;
+    this.isInvalid2 = false;
+    if (this.isInValid(this.deliveryAddress.name) ||
+        this.isInValid(this.deliveryAddress.address1) ||  
+        this.isInValid(this.deliveryAddress.address2) ||  
+        this.isInValid(this.deliveryAddress.city) ||  
+        this.isInValid(this.deliveryAddress.state) ||  
+        this.isInValid(this.deliveryAddress.pincode)) {
+      this.isError2 = true;
+      return;
+    }
+
     let params = {
       name: this.deliveryAddress.name,
       address1:this.deliveryAddress.address1,
@@ -180,6 +206,17 @@ export class AccountComponent implements OnInit {
   }
   
   saveBillingAddress(){
+    this.isError3 = false;
+    this.isInvalid3 = false;
+    if (this.isInValid(this.billingAddress.name) ||
+        this.isInValid(this.billingAddress.address1) ||  
+        this.isInValid(this.billingAddress.address2) ||  
+        this.isInValid(this.billingAddress.city) ||  
+        this.isInValid(this.billingAddress.state) ||  
+        this.isInValid(this.billingAddress.pincode)) {
+      this.isError3 = true;
+      return;
+    }
     let params = {
       name: this.billingAddress.name,
       address1:this.billingAddress.address1,
