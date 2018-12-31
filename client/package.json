@@ -26,6 +26,7 @@
     "@ngui/map": "0.30.3",
     "@types/googlemaps": "3.26.14",
     "ajv": "6.5.0",
+    "angular-cropperjs": "^1.0.1",
     "angular-toastr": "^2.1.1",
     "angular2-toaster": "^7.0.0",
     "bootstrap": "^3.3.7",

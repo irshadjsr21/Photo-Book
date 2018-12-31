@@ -21,6 +21,7 @@ import { PreviewHeaderComponent } from './components/preview-header/preview-head
 import {NgxImageEditorModule} from 'ngx-image-editor';
 import { PhotoeditorComponent } from './components/photoeditor/photoeditor.component';
 import { AccountComponent } from './components/account/account.component';
+import { AngularCropperjsModule } from 'angular-cropperjs';
 const appRoutes: Routes = [
   { path: 'home', component: LandingComponent },
   { path: 'product', component: ProductDetailComponent },
@@ -57,6 +58,7 @@ const appRoutes: Routes = [
     HttpModule,
     BrowserModule,
     FormsModule,
+    AngularCropperjsModule,
     RouterModule.forRoot(appRoutes)
   ],
   providers: [ApiServiceService],
