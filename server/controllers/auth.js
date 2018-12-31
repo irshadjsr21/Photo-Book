@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Address = require('../models/address');
 const { validationResult } = require('express-validator/check');
 const { signJwt } = require('../utils/helperFunctions');
 
@@ -241,6 +242,201 @@ module.exports.changePassword = (req, res, next) => {
                     msg: ['Incorrect Password']
                 });
             }
+        })
+        .catch(error => {
+            next(error);
+        });
+}
+
+
+
+module.exports.getAddress = (req, res, next) => {
+
+    if(!req.user) {
+        return;
+    }
+
+    let fetchedUser;
+    let fetchedDeliveryAddress;
+    let fetchedBillingAddress;
+
+    User.findByPk(req.user.id)
+        .then(user => {
+            if(!user) {
+                throw new Error('No User Found');
+            }
+
+            fetchedUser = user;
+
+            return Address.findByPk(user.deliveryAddressId);
+        })
+        .then(deliveryAddress => {
+            fetchedDeliveryAddress = deliveryAddress;
+
+            return Address.findByPk(fetchedUser.billingAddressId);
+        })
+        .then(billingAddress => {
+            res.json({
+                result: {
+                    deliveryAddress: fetchedDeliveryAddress,
+                    billingAddress: billingAddress
+                }
+            });
+        })
+        .catch(error => {
+            next(error);
+        });
+}
+
+// Handles Saving Delivery Address
+module.exports.postDeliveryAddress = (req, res, next) => {
+
+    if(!req.user) {
+        return;
+    }
+
+    const userInput = {
+        name: req.body.name,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        city: req.body.city,
+        state: req.body.state,
+        pincode: req.body.pincode,
+    };
+
+    // Extracting Validation Errors from Express Validator
+    const validationError = validationResult(req).array();
+
+    // If Validation Error Exists => Show Error Message
+    if(validationError.length > 0) {
+        let errors = validationError.map(obj => obj.msg);
+        return res.status(422).json({
+            msg: errors
+        });
+    }
+
+    let fetchedUser;
+    let isAddressNew = true;
+
+    User.findByPk(req.user.id)
+        .then(user => {
+            if(!user) {
+                throw new Error('No User Found');
+            }
+
+            fetchedUser = user;
+
+            if(user.deliveryAddressId) {
+                isAddressNew = false;
+                return Address.findByPk(user.deliveryAddressId);
+            }
+
+            // Create new Address
+            const address = new Address(userInput);
+        
+            return address;
+        })
+        .then(address => {
+            if(isAddressNew) {
+                return address.save();
+            } 
+
+            for(const key in userInput) {
+                address[key] = userInput[key];
+            }
+
+            return address.save();
+        })
+        .then(address => {
+            if(isAddressNew) {
+                fetchedUser.deliveryAddressId = address.id;
+                return fetchedUser.save();
+            }
+
+            return Promise.resolve();
+        })
+        .then(() => {
+            res.json({
+                msg: ['Delivery Address Added Successfully']
+            });
+        })
+        .catch(error => {
+            next(error);
+        });
+}
+
+
+// Handles Saving Billing Address
+module.exports.postBillingAddress = (req, res, next) => {
+
+    if(!req.user) {
+        return;
+    }
+
+    const userInput = {
+        name: req.body.name,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        city: req.body.city,
+        state: req.body.state,
+        pincode: req.body.pincode,
+    };
+
+    // Extracting Validation Errors from Express Validator
+    const validationError = validationResult(req).array();
+
+    // If Validation Error Exists => Show Error Message
+    if(validationError.length > 0) {
+        let errors = validationError.map(obj => obj.msg);
+        return res.status(422).json({
+            msg: errors
+        });
+    }
+
+    let fetchedUser;
+    let isAddressNew = true;
+
+    User.findByPk(req.user.id)
+        .then(user => {
+            if(!user) {
+                throw new Error('No User Found');
+            }
+
+            fetchedUser = user;
+
+            if(user.billingAddressId) {
+                isAddressNew = false;
+                return Address.findByPk(user.billingAddressId);
+            }
+
+            // Create new Address
+            const address = new Address(userInput);
+        
+            return address;
+        })
+        .then(address => {
+            if(isAddressNew) {
+                return address.save();
+            } 
+
+            for(const key in userInput) {
+                address[key] = userInput[key];
+            }
+
+            return address.save();
+        })
+        .then(address => {
+            if(isAddressNew) {
+                fetchedUser.billingAddressId = address.id;
+                return fetchedUser.save();
+            }
+
+            return Promise.resolve();
+        })
+        .then(() => {
+            res.json({
+                msg: ['Billing Address Added Successfully']
+            });
         })
         .catch(error => {
             next(error);

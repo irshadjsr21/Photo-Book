@@ -59,6 +59,29 @@ module.exports.changePassword = [
         })
 ]
 
+module.exports.address = [
+    body('name', 'Name is Required')
+        .not()
+        .isEmpty(),
+    body('address1', 'Address 1 is Required')
+        .not()
+        .isEmpty(),
+    body('address2', 'Address 2 is Required')
+        .not()
+        .isEmpty(),
+    body('city', 'City is Required')
+        .not()
+        .isEmpty(),
+    body('state', 'State is Required')
+        .not()
+        .isEmpty(),
+    body('pincode', 'Pincode is Invalid')
+        .not()
+        .isEmpty()
+        .isNumeric()
+        .isLength({ min: 6, max: 6 })
+]
+
 module.exports.mugCategory = [
     body('name')
         .not()
