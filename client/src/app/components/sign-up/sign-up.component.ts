@@ -43,6 +43,7 @@ export class SignUpComponent implements OnInit {
       this.isError = true;
       return;
     }
+    
     if(!this.validateEmail(this.signupData.email)){
       this.isError = true;
       return;

@@ -20,6 +20,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { PreviewHeaderComponent } from './components/preview-header/preview-header.component';
 import {NgxImageEditorModule} from 'ngx-image-editor';
 import { PhotoeditorComponent } from './components/photoeditor/photoeditor.component';
+import { AccountComponent } from './components/account/account.component';
+import { AngularCropperjsModule } from 'angular-cropperjs';
 const appRoutes: Routes = [
   { path: 'home', component: LandingComponent },
   { path: 'product', component: ProductDetailComponent },
@@ -28,6 +30,7 @@ const appRoutes: Routes = [
   { path: 'signup', component: SignUpComponent },
   { path: 'productedit', component: ProductDetailComponent },
   { path: 'photoeditor', component: PhotoeditorComponent },
+  { path: 'account', component: AccountComponent },
   { path: '', component: LandingComponent },
   { path: '**', component: LandingComponent }
 ];
@@ -49,11 +52,13 @@ const appRoutes: Routes = [
     HeaderComponent,
     PreviewHeaderComponent,
     PhotoeditorComponent,
+    AccountComponent,
   ],
   imports: [
     HttpModule,
     BrowserModule,
     FormsModule,
+    AngularCropperjsModule,
     RouterModule.forRoot(appRoutes)
   ],
   providers: [ApiServiceService],

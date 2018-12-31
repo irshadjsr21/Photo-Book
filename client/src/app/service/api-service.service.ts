@@ -168,7 +168,7 @@ export class ApiServiceService {
     }
   }
   private redirectToLogin() {
-    this.router.navigate(['']);
+    this.router.navigate(['signin']);
   }
   private redirectToHome() {
     this.router.navigate(['home']);
@@ -191,15 +191,14 @@ export class ApiServiceService {
       headersConfig.append('enctype', this.getContentType(contentType));
     else
       headersConfig.append('Content-Type', this.getContentType(contentType));
+      headersConfig.append('Accept', this.getAcceptType(acceptType));
 
-    headersConfig.append('Accept', this.getAcceptType(acceptType));
-
-    // if (!skipToken) {
-    //   const token = this.cacheService.getToken();
-    //   if (token) {
-    //     headersConfig.append('Authorization', `bearer ${token}`);
-    //   }
-    // }
+    if (!skipToken) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        headersConfig.append('Authorization', `bearer ${token}`);
+      }
+    }
     return headersConfig;
   }
   private getContentType(contentType: RequestContentType): string {

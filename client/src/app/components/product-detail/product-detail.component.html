@@ -1,21 +1,60 @@
 <app-preview-header></app-preview-header>
+<div class="container">
+    <div class="row cancel-product" style="margin-top: 22px;">
+        <div class="col-md-7 col-md-offset-2">
+        </div>
+        <div class="col-md-3">
+          <a class="cancel-link pull-right" routerLink="/mug" style="cursor: pointer;text-decoration: underline">Back to
+            Product</a>
+        </div>
+    </div>
+</div>
 <section class="image-editor-section">
   <div class="container">
-    <div class="row mar-row">
+      <div class="row mar-row">
       <div class="col-md-12">
         <div class="row">
-          <div class="col-md-7 col-md-offset-2">
-            <div class="img-editor">
+          <div class="col-md-2" *ngIf="isEditImage">
+              <div class="left-sidebar">
+                  <p class="design-tools-title">Design Tools</p>
+                  <ul class="list-unstyled design-tools-list">
+                      <li (click)="cropClick()" ><i class="icon fa fa-crop left-icon"></i><span>Crop</span></li>
+                    <li (click)="rotate('right')">
+                        <i class="icon fa fa-repeat left-icon mod-icon-rotate"></i><span>Rotate</span></li>
+                    <li (click)="scale('x')">
+                        <i class="icon fa fa-chevron-circle-up left-icon"></i><span>Flip Horizontal</span></li>
+                    <li (click)="scale('y')">
+                        <i class="icon fa fa-chevron-circle-right icon-custom-lg left-icon"></i><span>Flip Vertical</span></li>
+                    <li>
+                        <i class="icon fa fa-text-width icon-custom-sm left-icon"></i><span>Add Text</span></li>
+                    <li>
+                        <i class="icon fa fa-magic icon-custom-sm wizard" id="filters"></i><span>Image Filter</span></li>
+                  </ul>
+                </div>
+          </div>
+          <div class="col-md-2" *ngIf="!isEditImage">
+              <div class="l-sidebar-wrapper" style="min-height: 465px;">
+                <ul class="list-unstyled guideline-link-list">
+                  <li>Guidelines</li>
+                  <li>Cut lines <span class="pull-right">-----</span></li>
+                  <li>
+                    <p>Learn more</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          <div class="col-md-7">
+            <div *ngIf="!isEditImage" class="img-editor">
               <div class="placer">
                 <div class="placeholders">
-                  <input type="file" #imageUpload style="opacity: 0;" (change)="readURL($event);">
+                  <input type="file" #imageUpload style="opacity: 0;" (change)="onFileSelected($event);">
                   <img *ngIf="previewImg" class="img-placeholder" (click)="imageUpload.click()" src="../../../assets/images/placeholder.png" alt="">
                   <img *ngIf="uploadedImg" [src]="imageSrc" class="image-uploaded" id="img">
                   <div class="dropdown" *ngIf="uploadedImg">
                     <button class="btn btn-primary btn-z dropdown-toggle" type="button" data-toggle="dropdown"><i class="fa fa-angle-down"></i>
                       </button>
                     <ul class="dropdown-menu dm">
-                      <li><a routerLink="/photoeditor">Edit</a></li>
+                      <li><a (click)="isEditImage = true">Edit</a></li>
                       <li><a >Zoom</a></li>
                       <li><a (click)="remImg()">Remove</a></li>
                     </ul>
@@ -28,6 +67,155 @@
 
               </div>
             </div>
+            <!-- <div class="row">
+                <div class="col-sm-12">
+                  <h2>Pls choose an image file</h2>
+                  <label class="btn btn-primary btn-upload" for="inputImage" title="Upload image file">
+                    <input type="file" name="photo" (change)="onFileSelected($event)" class="sr-only" id="inputImage" accept="image/*">
+                    <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="Import image with Blob URLs">
+                          <span class="fa fa-upload"></span>
+                        </span>
+                  </label>
+                </div>
+              </div> -->
+            <div *ngIf="isEditImage" class="img-editor">
+                    <div class="row">
+                      <div class="col-xs-12 col-sm-9">
+                        <angular-cropper #angularCropper *ngIf="showCropper && imageUrl"
+                                         [cropperOptions]="cropperConfig"
+                                         [imageUrl]="imageUrl"
+                                         (zoom)="zoomManual()"
+                                         (ready)="readyImage($event)"
+                                         (cropend)="cropendImage($event)">
+                        </angular-cropper>
+                      </div>
+                      <div class="col-xs-12 col-sm-3 crop-res" *ngIf="cropperRes || imageUrl">
+                        <img [src]="cropperRes || imageUrl">
+                        <div style="color: white;padding-top: 10px;
+                        padding-bottom: 10px;">
+                          <span style="cursor: pointer;"  (click)="applyCrop()">Apply</span>&nbsp;|&nbsp;
+                          <span style="cursor: pointer;" (click)="resetImageCrop()">Reset</span>
+                        </div>
+                        <div class="btn-group">
+                            <button (click)="zoom('positive')" type="button" class="btn btn-primary" data-method="zoom" data-option="0.1" title="Zoom In">
+                                <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.zoom(0.1)">
+                                  <span class="fa fa-search-plus"></span>
+                                </span>
+                            </button>
+                            <button (click)="zoom('negative')" type="button" class="btn btn-primary" data-method="zoom" data-option="-0.1" title="Zoom Out">
+                                <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.zoom(-0.1)">
+                                  <span class="fa fa-search-minus"></span>
+                                </span>
+                            </button>
+                        </div>
+                      </div>
+                      
+                    </div>
+                    <!-- <div class="row" *ngIf="imageUrl" id="actions">
+                      <div class="col-sm-12">
+                        <div class="docs-buttons">
+                           <h3>Toolbar:</h3>
+                  
+                          <div class="btn-group">
+                            <button (click)="zoom('positive')" type="button" class="btn btn-primary" data-method="zoom" data-option="0.1" title="Zoom In">
+                                <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.zoom(0.1)">
+                                  <span class="fa fa-search-plus"></span>
+                                </span>
+                            </button>
+                            <button (click)="zoom('negative')" type="button" class="btn btn-primary" data-method="zoom" data-option="-0.1" title="Zoom Out">
+                                <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.zoom(-0.1)">
+                                  <span class="fa fa-search-minus"></span>
+                                </span>
+                            </button>
+                          </div>
+                  
+                          <div class="btn-group">
+                            <button (click)="move(-10, 0)" type="button" class="btn btn-primary" data-method="move" data-option="-10" data-second-option="0" title="Move Left">
+                                <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.move(-10, 0)">
+                                  <span class="fa fa-arrow-left"></span>
+                                </span>
+                            </button>
+                            <button (click)="move(10, 0)" type="button" class="btn btn-primary" data-method="move" data-option="10" data-second-option="0" title="Move Right">
+                                <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.move(10, 0)">
+                                  <span class="fa fa-arrow-right"></span>
+                                </span>
+                            </button>
+                            <button (click)="move(0, -10)" type="button" class="btn btn-primary" data-method="move" data-option="0" data-second-option="-10" title="Move Up">
+                                <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.move(0, -10)">
+                                  <span class="fa fa-arrow-up"></span>
+                                </span>
+                            </button>
+                            <button (click)="move(0, 10)" type="button" class="btn btn-primary" data-method="move" data-option="0" data-second-option="10" title="Move Down">
+                                <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.move(0, 10)">
+                                  <span class="fa fa-arrow-down"></span>
+                                </span>
+                            </button>
+                          </div>
+                  
+                          <div class="btn-group">
+                            <button (click)="rotate('left')" type="button" class="btn btn-primary" data-method="rotate" data-option="-45" title="Rotate Left">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.rotate(-45)">
+                                <span class="fa fa-rotate-left"></span>
+                              </span>
+                            </button>
+                            <button (click)="rotate('right')" type="button" class="btn btn-primary" data-method="rotate" data-option="45" title="Rotate Right">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.rotate(45)">
+                                <span class="fa fa-rotate-right"></span>
+                              </span>
+                            </button>
+                          </div>
+                  
+                          <div class="btn-group">
+                            <button (click)="scale('x')" type="button" class="btn btn-primary" data-method="scaleX" data-option="-1" title="Flip Horizontal">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.scaleX(-1)">
+                                <span class="fa fa-arrows-h"></span>
+                              </span>
+                            </button>
+                            <button (click)="scale('y')" type="button" class="btn btn-primary" data-method="scaleY" data-option="-1" title="Flip Vertical">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.scaleY(-1)">
+                                <span class="fa fa-arrows-v"></span>
+                              </span>
+                            </button>
+                          </div>
+                  
+                          <div class="btn-group">
+                            <button (click)="clear()" type="button" class="btn btn-primary" data-method="clear" title="Clear">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.clear()">
+                                <span class="fa fa-remove"></span>
+                              </span>
+                            </button>
+                          </div>
+                  
+                          <div class="btn-group">
+                            <button (click)="disable()" type="button" class="btn btn-primary" data-method="disable" title="Disable">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.disable()">
+                                <span class="fa fa-lock"></span>
+                              </span>
+                            </button>
+                            <button (click)="enable()" type="button" class="btn btn-primary" data-method="enable" title="Enable">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.enable()">
+                                <span class="fa fa-unlock"></span>
+                              </span>
+                            </button>
+                          </div>
+                  
+                          <div class="btn-group">
+                            <button (click)="reset()" type="button" class="btn btn-primary" data-method="reset" title="Reset">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.reset()">
+                                <span class="fa fa-refresh"></span>
+                              </span>
+                            </button>
+                            <button (click)="destroy($event)" type="button" class="btn btn-primary" data-method="destroy" title="Destroy">
+                              <span class="docs-tooltip" data-toggle="tooltip" title="" data-original-title="cropper.destroy()">
+                                <span class="fa fa-power-off"></span>
+                              </span>
+                            </button>
+                          </div>
+                  
+                        </div>
+                      </div>
+                    </div> -->
+            </div>
           </div>
           <div class="col-md-3">
             <div class="preview">
@@ -35,15 +223,79 @@
               <h4> A mug for every reason</h4>
               <h4>Qty: 1</h4>
               <h2><i class="fa fa-inr"></i> 299</h2>
-              <div class="he"></div>
+              <div class="save-design-form" style="margin-bottom: 10px;width: 95%;
+              overflow: hidden;">
+                  <div style="cursor: pointer">
+                      <div class="design-name"><h4>{{objectName}}</h4></div>                          
+                  </div>
+              </div>
+              <button class="btn btn-preview" (click)="saveCropImages()" >Save</button>
+              <div style="margin-top: 10px" *ngIf="isSave">
+                  <span class="saved-design-note">
+                      <i class="icon fa fa-check"></i>
+                          Design Saved
+                  </span>
+              </div>
               <div class="buttons">
-              <button class="btn btn-preview">Preview</button>
-              <button class="btn btn-cart">Add To Cart</button>
+                <button class="btn btn-preview">Preview</button>
+                <button style="margin-left: 10px" class="btn btn-cart">Add To Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-md-2 theme-label-text">
+            </div>
+            <div class="col-md-7">
+              <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                  <a aria-controls="selectTheme" data-toggle="tab" href="#selectTheme" role="tab" aria-expanded="true">
+                    Select Theme</a></li>
+                <li  role="presentation" class=""><a  aria-controls="addImage" data-toggle="tab" href="#addImage" role="tab" aria-expanded="false">Add Images</a></li>
+              </ul>              
+              <div class="tab-content">
+                <div  class="tab-pane fade select-theme-tab-body active in" id="selectTheme" role="tabpanel">
+                  <div>
+                    <ul class="list-inline">
+                          <li class="">
+                            <div  id="themeCategory12">
+                              <img style="background-size: cover;" src="../../../assets/images/BestDad.jpg"/>
+                            </div>
+                            <p>Best Dad</p>
+                          </li>
+                          <li class="selected">
+                            <div  id="themeCategory11">
+                              <img style="background-size: cover;" src="../../../assets/images/Classic.jpg"/>
+                            </div>
+                            <p>Classic</p>
+                          </li>
+                          <li  class="">
+                            <div  id="themeCategory13"></div>
+                            <img style="background-size: cover;" src="../../../assets/images/BestMom.jpg"/>
+                            <p>Best Mom</p>
+                          </li>
+                          <li  class="">
+                            <div  id="themeCategory14"></div>
+                            <img style="background-size: cover;" src="../../../assets/images/BestWorkBuddy.jpg"/> 
+                            <p>Best Work Buddy</p>
+                          </li>
+                          <li  class="">
+                            <div  id="themeCategory15"></div>
+                            <img style="background-size: cover;" src="../../../assets/images/ForCouples.jpg"/>
+                            <p>For Couples</p>
+                          </li>
+                          <li >
+                            <div  id="themeCategory16"></div>
+                            <img style="background-size: cover;" src="../../../assets/images/Birthday.jpg"/>
+                            <p>Birthday</p>
+                          </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 </section>
