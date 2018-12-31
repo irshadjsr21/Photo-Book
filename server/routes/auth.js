@@ -15,4 +15,10 @@ router.put('/profile', authenticator(), validator.userProfile, authController.pu
 
 router.post('/change-password', authenticator(), validator.changePassword, authController.changePassword);
 
+router.get('/address', authenticator(), authController.getAddress);
+
+router.post('/delivery-address', authenticator(), validator.address, authController.postDeliveryAddress);
+
+router.post('/billing-address', authenticator(), validator.address, authController.postBillingAddress);
+
 module.exports = router;
