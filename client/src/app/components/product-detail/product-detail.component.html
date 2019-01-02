@@ -159,7 +159,7 @@
                 </span>
               </div>
               <div class="buttons">
-                <button class="btn btn-preview">Preview</button>
+                <button (click)="clickpreview()" data-toggle="modal" data-target="#canvasModal" class="btn btn-preview">Preview</button>
                 <button style="margin-left: 10px" class="btn btn-cart">Add To Cart</button>
               </div>
             </div>
@@ -495,4 +495,54 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
+
+<div class="modal fade" tabindex="-1" id="canvasModal" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Preview of Photo Mug &nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-inr"></i> 299
+          </h5>
+        </div>
+        <div class="modal-body">
+          <div class="modal-body">
+            <div class="container">
+              <div class="row" style="width: 73%;">
+               <div class="col-md-3">
+                  <div style="margin-top: 70%;" class="navigation left-navigation" (click)="preClick()">
+                      <i class="fa fa-arrow-left" style="padding-left: 5px;"></i>
+                      <span class="pre-page text-center">Previous Page</span>
+                  </div>
+               </div>
+                <div class="col-md-6" style="text-align: center;">
+                    <div id="group" #group>
+                        <div #groupDiv1>
+                          <canvas id="canvas1" #canvas1></canvas>
+                        </div>
+                      
+                        <div #groupDiv2>
+                          <canvas id="canvas2" #canvas2></canvas>
+                        </div>
+                      
+                        <div #groupDiv3>
+                          <canvas id="canvas3" #canvas3></canvas>
+                        </div>
+                      </div>
+                </div>
+                <div style="margin-top: 18%;" class="col-md-3">
+                    <div class="navigation right-navigation" (click)="nextClick()">
+                        <i class="fa fa-arrow-right" style="padding-left: 7px;"></i>
+                        <span class="pre-page text-center">Next Page</span>
+                      </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger text-uppercase col-yell" data-dismiss="modal" type="button">ADD TO CART</button>
+        </div>
+      </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild ,ElementRef } from '@angular/core';
 import {CropperComponent} from 'angular-cropperjs';
+
 
 @Component({
   selector: 'app-product-detail',
@@ -230,5 +231,215 @@ export class ProductDetailComponent implements OnInit {
   reset() {
     this.angularCropper.cropper.reset();
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
+  }
+  @ViewChild('canvas1') canvasId1: ElementRef;
+  @ViewChild('canvas2') canvasId2: ElementRef;
+  @ViewChild('canvas3') canvasId3: ElementRef;
+  
+  canvas1() {
+    var canvas = this.canvasId1.nativeElement;
+    var ctx = canvas.getContext("2d");
+    var productImg = new Image();
+    var pfo = this.imageSrc;
+    productImg.onload = function() {
+      var iw = productImg.width;
+      var ih = productImg.height;
+      canvas.width = iw;
+      canvas.height = ih;
+      ctx.drawImage(productImg, 0, 0, productImg.width, productImg.height,
+        0, 0, iw, ih);
+      loadUpperIMage()
+    };
+    productImg.src = "http://res.cloudinary.com/pussyhunter/image/upload/c_scale,f_auto,h_350/left_handle_cup_i7ztfs.jpg"
+  
+    function loadUpperIMage() {
+      var img = new Image();
+      if(pfo){
+        img.src = pfo;
+      }else{
+        img.src = "https://media1.giphy.com/media/j3uyvaaslUxNe/200_s.gif";
+      }   
+      
+      img.onload = function() {
+  
+        var iw = img.width;
+        var ih = img.height;
+  
+        var xOffset = 102, //left padding
+          yOffset = 110; //top padding
+  
+        //alert(ih)
+        var a = 75.0; //image width
+        var b = 10; //round ness
+  
+        var scaleFactor = iw / (4 * a);
+  
+        // draw vertical slices
+        for (var X = 0; X < iw; X += 1) {
+          var y = b / a * Math.sqrt(a * a - (X - a) * (X - a)); // ellipsis equation
+          ctx.drawImage(img, X * scaleFactor, 0, iw / 9, ih, X + xOffset, y + yOffset, 1, 174);
+        }
+      };
+    }
+  
+  };
+  
+   canvas2() {
+  
+    var canvas = this.canvasId2.nativeElement;
+    var ctx = canvas.getContext("2d");
+  
+    var productImg = new Image();
+    productImg.onload = function() {
+      var iw = productImg.width;
+      var ih = productImg.height;
+      console.log("height");
+  
+      canvas.width = iw;
+      canvas.height = ih;
+  
+      ctx.drawImage(productImg, 0, 0, productImg.width, productImg.height,
+        0, 0, iw, ih);
+      loadUpperIMage()
+    };
+  
+  
+    productImg.src = "http://res.cloudinary.com/pussyhunter/image/upload/h_350/canter_handle_cup_xyxhdd.jpg"
+  
+    function loadUpperIMage() {
+      var img = new Image();
+  
+      img.src = "https://fbcd.co/images/products/a765994bd870df31004c94e932e563b3_resize.jpg"
+  
+      img.onload = function() {
+  
+        var iw = img.width;
+        var ih = img.height;
+  
+        // alert(iw)
+  
+        var xOffset = 101, //left padding
+          yOffset = 110; //top padding
+  
+        var a = 75.0; //image width
+        var b = 10; //round ness
+  
+        var scaleFactor = iw / (4 * a);
+  
+        // draw vertical slices
+        for (var X = 0; X < iw; X += 1) {
+          var y = b / a * Math.sqrt(a * a - (X - a) * (X - a)); // ellipsis equation
+          ctx.drawImage(img, X * scaleFactor, 0, iw / 3, ih, X + xOffset, y + yOffset, 1, 174);
+  
+        }
+      };
+    }
+  
+  };
+  
+   canvas3() {
+    var canvas = this.canvasId3.nativeElement;
+    var ctx = canvas.getContext("2d");
+    var pfo = this.imageSrc;
+    var productImg = new Image();
+    productImg.onload = function() {
+      var iw = productImg.width;
+      var ih = productImg.height;
+  
+      canvas.width = iw;
+      canvas.height = ih;
+  
+      ctx.drawImage(productImg, 0, 0, productImg.width, productImg.height,
+        0, 0, iw, ih);
+      loadUpperIMage()
+    };
+  
+    productImg.src = "http://res.cloudinary.com/pussyhunter/image/upload/h_350/right_handle_cup_dsdhr7.jpg"
+  
+  
+    function loadUpperIMage() {
+      var img = new Image();
+  
+      if(pfo){
+        img.src = pfo;
+      }else{
+        img.src = "https://media1.giphy.com/media/j3uyvaaslUxNe/200_s.gif";
+      }  
+  
+      img.onload = function() {
+  
+        var iw = img.width;
+        var ih = img.height;
+  
+        //alert(iw)
+  
+        var xOffset = 102, //left padding
+          yOffset = 110; //top padding
+  
+        var a = 75.0; //image width
+        var b = 10; //round ness
+  
+        var scaleFactor = iw / (3 * a);
+  
+        // draw vertical slices
+        for (var X = 0; X < iw; X += 1) {
+          var y = b / a * Math.sqrt(a * a - (X - a) * (X - a)); // ellipsis equation
+          ctx.drawImage(img, X * scaleFactor, 0, iw / 1.5, ih, X + xOffset, y + yOffset, 1, 174);
+        }
+      };
+    }
+  };
+
+  clickpreview(){
+    setTimeout(() => {
+      this.canvas1()
+    }, 100);
+    setTimeout(() => {
+      this.canvas2()
+    }, 200);
+    setTimeout(() => {
+      this.canvas3();
+      this.updateItems();
+    }, 300);
+  }
+  @ViewChild('group') group: ElementRef;
+  @ViewChild('groupDiv1') groupDiv1: ElementRef;
+  @ViewChild('groupDiv2') groupDiv2: ElementRef;
+  @ViewChild('groupDiv3') groupDiv3: ElementRef;
+  canStep = 1;
+  updateItems()
+  { 
+    if(this.canStep == 1){
+      this.groupDiv1.nativeElement.classList.add('current');
+      this.groupDiv2.nativeElement.classList.remove('current');
+      this.groupDiv3.nativeElement.classList.remove('current'); 
+    }else if(this.canStep == 2){
+      this.groupDiv1.nativeElement.classList.remove('current');
+      this.groupDiv2.nativeElement.classList.add('current');
+      this.groupDiv3.nativeElement.classList.remove('current'); 
+    }else if(this.canStep == 3){
+      this.groupDiv1.nativeElement.classList.remove('current');
+      this.groupDiv2.nativeElement.classList.remove('current');
+      this.groupDiv3.nativeElement.classList.add('current'); 
+    }
+  }
+  nextClick(){
+    console.log(this.canStep);
+    if(this.canStep < 3){
+       this.canStep = this.canStep + 1;
+       this.updateItems();
+    }else if(this.canStep == 3){
+      this.canStep = 1;
+       this.updateItems();
+    }
+  }
+  preClick(){
+    if(this.canStep > 1){
+      this.canStep = this.canStep - 1;
+      this.updateItems();
+    }else if(this.canStep == 1){
+      this.canStep = 3;
+       this.updateItems();
+    }
   }
 }

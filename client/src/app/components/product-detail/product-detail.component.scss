@@ -672,3 +672,63 @@ button.close {
   color: #000;
   outline: none;
 }
+
+.navigation.left-navigation {
+  position: absolute;
+  top: 50%;
+  left: 0;
+}
+.navigation {
+  cursor: pointer;
+  z-index: 1;
+}
+.navigation {
+  display: inline-block;
+  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 5px;
+  border: 1px solid #666;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  border-radius: 50%;
+}
+span.pre-page {
+  display: inline-block;
+  font-size: 10px;
+  left: -14px;
+  position: absolute;
+  top: 40px;
+  width: 70px;
+}
+.navigation:hover {
+  background: #ffdc00;
+}
+.navigation.right-navigation {
+  position: absolute;
+  right: 0;
+  top: 50%;
+}
+
+#group div{
+  display: none;
+}
+#group div.current{
+  display: block;
+ 
+}
+#next, #prev{
+  width: 100px;
+  //height 40px;
+  cursor:pointer;
+  color:red;
+  position:fixed;
+}
+#next{
+float: right;  
+} 
+#prev{
+float: left;
+margin-left:40px;
+} 
