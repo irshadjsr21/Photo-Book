@@ -20,7 +20,35 @@ export class ProductDetailComponent implements OnInit {
   objectName:any = '';
   cropperRes: string;
   showCropper: boolean;
-
+  isSelectImage:any = false;
+  isCategory:any =1;
+  isSelectTheme:any = 1;
+  theme:any = {
+    dad:{
+      src1:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/My%20Daddy%20Strongest.jpg",
+      src2:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/My%20First%20Hero.jpg",
+      src3:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Happy%20Father%27s%20Day.jpg",
+      src4:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Best%20Dad%20in%20the%20World.jpg",
+    },
+    cla:{
+      src1:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Wrap%20around%20-%20single%20picture.jpg",
+      src2:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Square%20two%20pictures.jpg",
+      src3:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/3-in-1%20Portrait.jpg",
+      src4:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Three-%20in-One%20Collage.jpg",
+    },
+    mom:{
+      src1:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Best%20Mom%20Ever.jpg"
+    },
+    buddy:{
+      src1:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Best%20Work%20Buddy.jpg"
+    },
+    cops:{
+      src1:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Mr%20Mrs.jpg"
+    },
+    bir:{
+      src1:"https://dkesn94daljtk.cloudfront.net/canvera/assets/configuration/images/mug/thumbnails/themes/Older%20and%20Wiser.jpg"
+    }
+  }
   cropperConfig: object = {
     movable: true,
     scalable: true,
@@ -46,8 +74,8 @@ export class ProductDetailComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = e => this.imageSrc = reader.result;
       reader.readAsDataURL(file);
-      this.uploadedImg = true;
-      this.previewImg = false;
+      // this.uploadedImg = true;
+      // this.previewImg = false;
       this.imageUrl = this.imageSrc;
     }
   }
@@ -77,7 +105,7 @@ export class ProductDetailComponent implements OnInit {
         that.imageUrl = (<FileReader>eventCurr.target).result;
         that.copyimageUrl = (<FileReader>eventCurr.target).result;
         this.uploadedImg = true;
-        this.previewImg = false;
+        //this.previewImg = false;
         this.imageSrc = (<FileReader>eventCurr.target).result;
         setTimeout(function () {
           that.refreshCrop(that.imageUrl);
@@ -126,6 +154,20 @@ export class ProductDetailComponent implements OnInit {
     }else{
       this.isSave = true;
     }
+  }
+
+  selectImage(){
+    this.isSelectImage = true;
+    this.uploadedImg = true;
+    this.previewImg = false;
+  }
+
+  selectThame(type){
+    this.isSelectTheme = type;
+  }
+
+  selectCategory(type){
+    this.isCategory = type;
   }
 
   cropendImage(event) {
