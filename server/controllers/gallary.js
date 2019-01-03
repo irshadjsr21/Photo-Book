@@ -37,7 +37,7 @@ module.exports.getGallary = (req, res, next) => {
     // Get Gallary
     Gallary.findAll({ where: { userId: req.user.id }, attributes: ['id', 'imageUrl', 'createdAt', 'updatedAt']})
         .then(gallary => {
-            res.json({
+            res.status(200).json({
                 result: gallary
             });
         })
