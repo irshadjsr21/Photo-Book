@@ -6,7 +6,8 @@ const sequelize = new Sequelize(DB.DB_NAME, DB.USER, DB.PASSWORD, {
     dialect: 'mysql',
     host: DB.HOST,
     port: DB.PORT,
-    operatorsAliases: false
+    operatorsAliases: false,
+    logging: false
 });
 
 module.exports = sequelize;

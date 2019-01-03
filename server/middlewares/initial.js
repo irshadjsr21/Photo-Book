@@ -3,8 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const addUser = require('./addUser');
-const config = require('../utils/config');
-
+const morgan = require('morgan');
 
 module.exports = [
 
@@ -13,5 +12,6 @@ module.exports = [
 
     // Setting CORS
     cors(),
-    addUser
+    addUser,
+    morgan('dev')
 ]

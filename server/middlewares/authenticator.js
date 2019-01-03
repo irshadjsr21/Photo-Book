@@ -7,8 +7,17 @@ module.exports = (role) => {
     }
     
     return (req,res,next) => {
-        if(req.user && req.user.role === role){
-            next();
+        if(req.user){
+            if(req.user.role === role) {
+                next();
+            }
+            else {
+                return res.status(401).json({
+                    msg: [
+                        "Unauthorized User"
+                    ]
+                });
+            }
         }
         else{
             return res.status(401).json({

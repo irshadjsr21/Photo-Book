@@ -1,10 +1,10 @@
-const MugCategory = require('../../../models/mugCategory');
-const Mug = require('../../../models/mug');
+const DesktopCalenderCategory = require('../../../models/desktopCalenderCategory');
+const DesktopCalender = require('../../../models/desktopCalender');
 const { validationResult } = require('express-validator/check');
 const { deleteImage } = require('../../../utils/helperFunctions');
 
-// Add Mug Category
-module.exports.postMug = (req, res, next) => {
+// Add DesktopCalender Category
+module.exports.postDesktopCalender = (req, res, next) => {
     if(!req.user) {
         return;
     }
@@ -17,10 +17,9 @@ module.exports.postMug = (req, res, next) => {
 
     const userInput = {
         name: req.body.name,
-        whitePrice: req.body.whitePrice,
-        blackPrice: req.body.blackPrice,
+        price: req.body.price,
         imageUrl: `/uploads/${req.file.filename}`,
-        mugCategoryId: req.body.mugCategoryId
+        desktopCalenderCategoryId: req.body.desktopCalenderCategoryId
     };
 
     // Extracting Validation Errors from Express Validator
@@ -35,22 +34,22 @@ module.exports.postMug = (req, res, next) => {
         });
     }
 
-    MugCategory.findByPk(userInput.mugCategoryId)
+    DesktopCalenderCategory.findByPk(userInput.desktopCalenderCategoryId)
         .then(category => {
             if(!category) {
                 deleteImage(userInput.imageUrl);
                 return res.status(404).json({
-                    msg: ['No Mug Category Found']
+                    msg: ['No DesktopCalender Category Found']
                 });
             }
             
-            // Crate new Mug
-            const mug = new Mug(userInput);
+            // Crate new DesktopCalender
+            const desktopCalender = new DesktopCalender(userInput);
         
-            mug.save()
+            desktopCalender.save()
                 .then(() => {
                     res.json({
-                        msg : ['Mug created Successfully']
+                        msg : ['DesktopCalender created Successfully']
                     });
                 })
                 .catch(error => {
@@ -62,8 +61,8 @@ module.exports.postMug = (req, res, next) => {
         });
 }
 
-// Returns Mug
-module.exports.getMug = (req, res, next) => {
+// Returns DesktopCalender
+module.exports.getDesktopCalender = (req, res, next) => {
     if(!req.user) {
         return;
     }
@@ -72,14 +71,14 @@ module.exports.getMug = (req, res, next) => {
     if(req.query.id) {
         options.id = req.query.id;
     } else if (req.query.category) {
-        options.mugCategoryId = req.query.category;
+        options.desktopCalenderCategoryId = req.query.category;
     }
 
-    // Find All Mug Categories
-    Mug.findAll({ where: options })
-        .then(mugs => {
+    // Find All DesktopCalender Categories
+    DesktopCalender.findAll({ where: options })
+        .then(desktopCalenders => {
             res.json({
-                result: mugs
+                result: desktopCalenders
             });
         })
         .catch(error => {
@@ -87,28 +86,28 @@ module.exports.getMug = (req, res, next) => {
         });
 }
 
-// Deletes Mug
-module.exports.deleteMug = (req, res, next) => {
+// Deletes DesktopCalender
+module.exports.deleteDesktopCalender = (req, res, next) => {
     if(!req.user) {
         return;
     }
 
     const id = req.params.id;
 
-    // Find Mug
-    Mug.findByPk(id)
-        .then(mug => {
-            if(!mug) {
+    // Find DesktopCalender
+    DesktopCalender.findByPk(id)
+        .then(desktopCalender => {
+            if(!desktopCalender) {
                 return res.status(404).json({
-                    msg: ['No Mug Found']
+                    msg: ['No DesktopCalender Found']
                 });
             }
 
-            mug.destroy()
+            desktopCalender.destroy()
                 .then(() => {
-                    deleteImage(mug.imageUrl);
+                    deleteImage(desktopCalender.imageUrl);
                     res.json({
-                        msg: ['Mug Deleted Successfully']
+                        msg: ['DesktopCalender Deleted Successfully']
                     });
                 })
                 .catch(error => {
@@ -120,18 +119,17 @@ module.exports.deleteMug = (req, res, next) => {
         });
 }
 
-// Edit Mug
-module.exports.putMug = (req, res, next) => {
+// Edit DesktopCalender
+module.exports.putDesktopCalender = (req, res, next) => {
     if(!req.user) {
         return;
     }
-    
+
     const id = req.params.id;
 
     const userInput = {
         name: req.body.name,
-        whitePrice: req.body.whitePrice,
-        blackPrice: req.body.blackPrice,
+        price: req.body.price
     };
 
     if(req.file) {
@@ -149,28 +147,28 @@ module.exports.putMug = (req, res, next) => {
         });
     }
 
-    // Find Mug
-    Mug.findByPk(id)
-        .then(mug => {
-            if(!mug) {
+    // Find DesktopCalender
+    DesktopCalender.findByPk(id)
+        .then(desktopCalender => {
+            if(!desktopCalender) {
                 if(userInput.imageUrl) {
                     deleteImage(userInput.imageUrl);
                 }
                 return res.status(404).json({
-                    msg: ['No Mug Found']
+                    msg: ['No DesktopCalender Found']
                 });
             }
 
-            deleteImage(mug.imageUrl);
+            deleteImage(desktopCalender.imageUrl);
 
             for(const key in userInput) {
-                mug[key] = userInput[key];
+                desktopCalender[key] = userInput[key];
             }
             
-            mug.save()
+            desktopCalender.save()
                 .then(() => {
                     res.json({
-                        msg: ['Mug Edited Successfully']
+                        msg: ['DesktopCalender Edited Successfully']
                     });
                 })
                 .catch(error => {
