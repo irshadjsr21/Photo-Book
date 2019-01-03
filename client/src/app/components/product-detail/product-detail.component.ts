@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild ,ElementRef } from '@angular/core';
 import {CropperComponent} from 'angular-cropperjs';
+import { Router } from '@angular/router';
+
 
 
 @Component({
@@ -60,10 +62,17 @@ export class ProductDetailComponent implements OnInit {
 
   @ViewChild('angularCropper') public angularCropper: CropperComponent;
 
-  constructor() {
+  constructor(private router: Router) {
   }
-
+  isLogin:any = true;
   ngOnInit() {
+    let token = localStorage.getItem('token');
+    if (token && token != null) {
+        this.isLogin = true;
+    }else{
+      this.isLogin = false;
+      this.router.navigate(['signin']);
+    }
   }
 
 
@@ -203,12 +212,25 @@ export class ProductDetailComponent implements OnInit {
     this.angularCropper.cropper.move(offsetX, offsetY);
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
+  togglebutScalex:any = 1;
+  togglebutScaley:any = 1;
   scale(offset) {
     if (offset === 'x') {
-      this.angularCropper.cropper.scaleX(-1);
+      if(this.togglebutScalex == 1){
+        this.togglebutScalex = 0;
+        this.angularCropper.cropper.scaleX(-1);
+      }else{
+        this.togglebutScalex = 1;
+        this.angularCropper.cropper.scaleX(1);
+      }
     } else {
-      this.angularCropper.cropper.scaleY(-1);
+      if(this.togglebutScaley == 1){
+        this.togglebutScaley = 0;
+        this.angularCropper.cropper.scaleY(-1);
+      }else{
+        this.togglebutScaley = 1;
+        this.angularCropper.cropper.scaleY(1);
+      }
     }
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }

@@ -37,6 +37,10 @@ export class ApiServiceService {
       )
       .pipe(
         catchError(error => {
+          if (error.status === 401) {
+            localStorage.clear();
+            this.redirectToLogin();
+          }
           return Observable.throw(error.json().error || 'Server error');
         })
       );
@@ -130,6 +134,7 @@ export class ApiServiceService {
     acceptType?: ResponseContentType,
     contentType?: RequestContentType): Observable<any> {
     if (error.status === 401) {
+        localStorage.clear();
         this.redirectToLogin();
     }
     else if (error.status === 403) {

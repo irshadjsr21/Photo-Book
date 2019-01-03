@@ -23,16 +23,15 @@ import { PhotoeditorComponent } from './components/photoeditor/photoeditor.compo
 import { AccountComponent } from './components/account/account.component';
 import { AngularCropperjsModule } from 'angular-cropperjs';
 const appRoutes: Routes = [
-  { path: 'home', component: LandingComponent },
-  { path: 'product', component: ProductDetailComponent },
   { path: 'mug', component: MugsComponent },
   { path: 'signin', component: SignInComponent },
   { path: 'signup', component: SignUpComponent },
   { path: 'productedit', component: ProductDetailComponent },
   { path: 'photoeditor', component: PhotoeditorComponent },
   { path: 'account', component: AccountComponent },
-  { path: '', component: LandingComponent },
-  { path: '**', component: LandingComponent }
+  { path: 'product', component: LandingComponent },
+  { path: '',redirectTo: '/product',pathMatch: 'full'},
+  { path: '**',redirectTo: '/product'}
 ];
 
 @NgModule({
