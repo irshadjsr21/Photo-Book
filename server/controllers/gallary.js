@@ -50,7 +50,7 @@ module.exports.deleteGallary = (req, res, next) => {
     
     const id = req.params.id;
 
-    Gallary.findByPk(id)
+    Gallary.findOne({ where: { userId: req.user.id, id: id } })
         .then(gallary => {
             if(!gallary) {
                 return res.status(404).json({
