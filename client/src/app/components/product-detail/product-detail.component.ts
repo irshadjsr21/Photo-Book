@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild ,ElementRef } from '@angular/core';
 import {CropperComponent} from 'angular-cropperjs';
 import { Router } from '@angular/router';
-
-
+import { ApiServiceService } from '../../service/api-service.service';
+import { ResponseContentType, RequestContentType, ResponseType } from '../../service/enum';
 
 @Component({
   selector: 'app-product-detail',
@@ -61,20 +61,44 @@ export class ProductDetailComponent implements OnInit {
   };
 
   @ViewChild('angularCropper') public angularCropper: CropperComponent;
-
-  constructor(private router: Router) {
+  formData1: FormData = new FormData();
+  constructor(private router: Router,private httpService: ApiServiceService) {
   }
   isLogin:any = true;
   ngOnInit() {
     let token = localStorage.getItem('token');
     if (token && token != null) {
         this.isLogin = true;
+        this.getGallary();
     }else{
       this.isLogin = false;
       this.router.navigate(['signin']);
     }
   }
 
+  getGallary(){
+    let params = {};
+    this.httpService.get('api/gallary',params).subscribe(res => {
+      if (res) {
+        this.imageGallary = res.result;
+      }
+    },error=>{
+
+    })
+  }
+  imageGallary = [];
+  uploadImage(){
+    let params = {};
+    if (this.formData1.has('image'))
+      params['image'] = this.formData1.get('image');
+    this.httpService.post('api/gallary',params,ResponseContentType.Json, RequestContentType.FORM_DATA).subscribe(res => {
+      if (res) {
+            this.getGallary();
+      }
+    },error=>{
+
+    })
+  }
 
   readURL(event: any): void {
 
@@ -111,12 +135,15 @@ export class ProductDetailComponent implements OnInit {
       const reader = new FileReader();
       this.objectName = event.target.files[0].name;
       that.showCropper = false;
+      this.formData1.append('image', event.target.files[0])
+      
       reader.onload = (eventCurr: ProgressEvent) => {
         that.imageUrl = (<FileReader>eventCurr.target).result;
         that.copyimageUrl = (<FileReader>eventCurr.target).result;
         this.uploadedImg = true;
         //this.previewImg = false;
         this.imageSrc = (<FileReader>eventCurr.target).result;
+        this.uploadImage();
         setTimeout(function () {
           that.refreshCrop(that.imageUrl);
         }, 2000);

@@ -30,13 +30,14 @@ export class ApiServiceService {
     return this.http.get(`${AppSettings.ApiBaseUrl}${path}`,
       {
         headers: this.getHeaders(contentType, acceptType),
-        params: httpParams
+        //params: httpParams
       })
       .pipe(
         map(res => acceptType && acceptType != ResponseContentType.Json ? res : res.json())
       )
       .pipe(
         catchError(error => {
+          debugger;
           if (error.status === 401) {
             localStorage.clear();
             this.redirectToLogin();

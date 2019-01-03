@@ -281,9 +281,9 @@
                     <div>
                       <div class="img-drag-drop-wrapper">
                         <ul class="list-inline upload-img-list" style="cursor: pointer;">
-                          <li class="upload" *ngIf="uploadedImg" style="cursor: pointer;">
+                          <li *ngFor="let imageItem of imageGallary;let i= index;" class="upload"  style="cursor: pointer;">
                             <div class="img" (click)="selectImage()" data-dismiss="modal">
-                              <img width="100" height="100" [src]="imageSrc" />
+                              <img width="100" height="100" src="http://localhost:3000{{imageItem.imageUrl}}" />
                               <span *ngIf="isSelectImage" class="select-icon">
                                 <i class="fa fa-check"></i>
                               </span>
