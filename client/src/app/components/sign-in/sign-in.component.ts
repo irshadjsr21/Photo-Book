@@ -38,7 +38,7 @@ export class SignInComponent implements OnInit {
     this.httpService.post('api/login', params).subscribe(res => {
       if (res) {
           localStorage.setItem('token', res.token);
-          this.router.navigate(['home']);
+          this.router.navigate(['product']);
       }
     },error=>{
       this.isError = true;
