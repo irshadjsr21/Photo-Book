@@ -30,14 +30,14 @@
 
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a routerLink="/signin"><span class="glyphicon glyphicon-user"></span> Sign In</a></li>
-          <li><a routerLink="/signup"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
-          <li><a href="#"> <i class="fa fa-shopping-cart cart-icon"></i></a></li>
-          <li class="dropdown" style="margin-top: 9px;margin-left: 18px;">
+          <li *ngIf="!isLogin"><a routerLink="/signin"><span class="glyphicon glyphicon-user"></span> Sign In</a></li>
+          <li *ngIf="!isLogin"><a routerLink="/signup"><span class="glyphicon glyphicon-log-in"></span> Register</a></li>
+          <li *ngIf="isLogin"><a href="#"> <i class="fa fa-shopping-cart cart-icon"></i></a></li>
+          <li *ngIf="isLogin" class="dropdown" style="margin-top: 9px;margin-left: 18px;">
             <img height="30" width="30" class="dropdown-toggle profile" data-toggle="dropdown" src="../../../assets/images/user.png" /> <span class="caret"></span>
             <ul class="dropdown-menu">
               <li><a routerLink="/account">My Account</a></li>
-              <li><a routerLink="/signin">Sign Out</a></li>
+              <li><a (click)="logoutClick()" routerLink="/signin">Sign Out</a></li>
             </ul>
           </li>
         </ul>

@@ -30,13 +30,18 @@ export class ApiServiceService {
     return this.http.get(`${AppSettings.ApiBaseUrl}${path}`,
       {
         headers: this.getHeaders(contentType, acceptType),
-        params: httpParams
+        //params: httpParams
       })
       .pipe(
         map(res => acceptType && acceptType != ResponseContentType.Json ? res : res.json())
       )
       .pipe(
         catchError(error => {
+          debugger;
+          if (error.status === 401) {
+            localStorage.clear();
+            this.redirectToLogin();
+          }
           return Observable.throw(error.json().error || 'Server error');
         })
       );
@@ -130,6 +135,7 @@ export class ApiServiceService {
     acceptType?: ResponseContentType,
     contentType?: RequestContentType): Observable<any> {
     if (error.status === 401) {
+        localStorage.clear();
         this.redirectToLogin();
     }
     else if (error.status === 403) {

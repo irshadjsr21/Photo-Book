@@ -258,7 +258,6 @@ module.exports.getAddress = (req, res, next) => {
 
     let fetchedUser;
     let fetchedDeliveryAddress;
-    let fetchedBillingAddress;
 
     User.findByPk(req.user.id)
         .then(user => {
