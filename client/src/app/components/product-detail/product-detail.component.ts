@@ -10,12 +10,13 @@ import { ResponseContentType, RequestContentType, ResponseType } from '../../ser
   styleUrls: ['./product-detail.component.scss']
 })
 export class ProductDetailComponent implements OnInit {
-
-  imageSrc: string;
+  formData1: FormData = new FormData();
+  isLogin:any = true;
+  imageSrc:any = '';
+  imageGallary = [];
   url;
   previewImg: boolean = true;
   uploadedImg: boolean = false;
-  
   imageUrl: any;
   copyimageUrl: any;
   isEditImage:any = false;
@@ -23,7 +24,10 @@ export class ProductDetailComponent implements OnInit {
   objectName:any = '';
   cropperRes: string;
   showCropper: boolean;
+  isEditDesignName:any = false;
+
   isSelectImage:any = false;
+  selectedTheme1ImageId:any = -1;
   isCategory:any =1;
   isSelectTheme:any = 1;
   theme:any = {
@@ -59,12 +63,9 @@ export class ProductDetailComponent implements OnInit {
     viewMode: 2,
     checkCrossOrigin: true
   };
-
-  @ViewChild('angularCropper') public angularCropper: CropperComponent;
-  formData1: FormData = new FormData();
+  
   constructor(private router: Router,private httpService: ApiServiceService) {
   }
-  isLogin:any = true;
   ngOnInit() {
     let token = localStorage.getItem('token');
     if (token && token != null) {
@@ -72,76 +73,40 @@ export class ProductDetailComponent implements OnInit {
         this.getGallary();
     }else{
       this.isLogin = false;
+      localStorage.setItem('isReturnDesignTool',"1");
       this.router.navigate(['signin']);
     }
   }
-
   getGallary(){
     let params = {};
     this.httpService.get('api/gallary',params).subscribe(res => {
       if (res) {
         this.imageGallary = res.result;
       }
-    },error=>{
-
-    })
+    },error=>{})
   }
-  imageGallary = [];
   uploadImage(){
     let params = {};
     if (this.formData1.has('image'))
       params['image'] = this.formData1.get('image');
     this.httpService.post('api/gallary',params,ResponseContentType.Json, RequestContentType.FORM_DATA).subscribe(res => {
       if (res) {
+            this.formData1 = new FormData();
             this.getGallary();
       }
-    },error=>{
-
-    })
+    },error=>{})
   }
-
-  readURL(event: any): void {
-
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-
-      const reader = new FileReader();
-      reader.onload = e => this.imageSrc = reader.result;
-      reader.readAsDataURL(file);
-      // this.uploadedImg = true;
-      // this.previewImg = false;
-      this.imageUrl = this.imageSrc;
-    }
-  }
-
-  remImg() {
-    this.uploadedImg = false;
-    this.previewImg = true;
-  }
-
-  resize(direction) {
-    const delta = 100 * direction;
-    console.log(delta);
-    const element = document.getElementById('img');
-    const positionInfo = element.getBoundingClientRect();
-
-    element.style.width = positionInfo.width + delta + 'px';
-    element.style.height = positionInfo.height + delta + 'px';
-  }
-
   onFileSelected(event) {
     const that = this;
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       this.objectName = event.target.files[0].name;
       that.showCropper = false;
-      this.formData1.append('image', event.target.files[0])
-      
+      this.formData1.append('image', event.target.files[0]);   
       reader.onload = (eventCurr: ProgressEvent) => {
         that.imageUrl = (<FileReader>eventCurr.target).result;
         that.copyimageUrl = (<FileReader>eventCurr.target).result;
         this.uploadedImg = true;
-        //this.previewImg = false;
         this.imageSrc = (<FileReader>eventCurr.target).result;
         this.uploadImage();
         setTimeout(function () {
@@ -151,12 +116,38 @@ export class ProductDetailComponent implements OnInit {
       reader.readAsDataURL(event.target.files[0]);
     }
   }
-
+  remImg() {
+    this.uploadedImg = false;
+    this.previewImg = true;
+  }
+  resize(direction) {
+    const delta = 100 * direction;
+    const element = document.getElementById('img');
+    const positionInfo = element.getBoundingClientRect();
+    element.style.width = positionInfo.width + delta + 'px';
+    element.style.height = positionInfo.height + delta + 'px';
+  }
+  selectImage(id){
+    this.isSelectImage = true;
+    this.selectedTheme1ImageId = id;
+    this.uploadedImg = true;
+    this.previewImg = false;
+  }
+  selectThame(type){
+    this.isSelectTheme = type;
+  }
+  selectCategory(type){
+    this.isCategory = type;
+  }
+  //###############################EditImageFunction############################
+  @ViewChild('angularCropper') public angularCropper: CropperComponent;
+  togglebutScalex:any = 1;
+  togglebutScaley:any = 1;
+  isCrop:any = true;
   refreshCrop(img) {
     this.imageUrl = img;
     this.showCropper = true;
   }
-  isCrop:any = true;
   cropClick(){
     if(this.isCrop){
       this.clear();
@@ -183,7 +174,6 @@ export class ProductDetailComponent implements OnInit {
         this.showCropper = true;
     },10);
   }
-
   saveCropImages(){
     if(this.isEditImage){
       this.imageSrc = this.cropperRes;
@@ -192,55 +182,32 @@ export class ProductDetailComponent implements OnInit {
       this.isSave = true;
     }
   }
-
-  selectImage(){
-    this.isSelectImage = true;
-    this.uploadedImg = true;
-    this.previewImg = false;
-  }
-
-  selectThame(type){
-    this.isSelectTheme = type;
-  }
-
-  selectCategory(type){
-    this.isCategory = type;
-  }
-
   cropendImage(event) {
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   readyImage(event) {
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   rotate(turn) {
     turn = turn === 'left' ? -45 : 45;
     this.angularCropper.cropper.rotate(turn);
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   destroy() {
     this.angularCropper.cropper.destroy();
   }
-
   zoomManual() {
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   zoom(status) {
     status = status === 'positive' ? 0.1 : -0.1;
     this.angularCropper.cropper.zoom(status);
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   move(offsetX, offsetY) {
     this.angularCropper.cropper.move(offsetX, offsetY);
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-  togglebutScalex:any = 1;
-  togglebutScaley:any = 1;
   scale(offset) {
     if (offset === 'x') {
       if(this.togglebutScalex == 1){
@@ -261,30 +228,34 @@ export class ProductDetailComponent implements OnInit {
     }
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   clear() {
     this.angularCropper.cropper.clear();
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   disable() {
     this.angularCropper.cropper.disable();
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   enable() {
     this.angularCropper.cropper.enable();
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
-
   reset() {
     this.angularCropper.cropper.reset();
     this.cropperRes = this.angularCropper.cropper.getCroppedCanvas().toDataURL('image/jpeg');
   }
+  editDesignName(){
+    this.isEditDesignName = !this.isEditDesignName;
+  }
+  //########################CanvasFunction############################
   @ViewChild('canvas1') canvasId1: ElementRef;
   @ViewChild('canvas2') canvasId2: ElementRef;
   @ViewChild('canvas3') canvasId3: ElementRef;
-  
+  @ViewChild('group') group: ElementRef;
+  @ViewChild('groupDiv1') groupDiv1: ElementRef;
+  @ViewChild('groupDiv2') groupDiv2: ElementRef;
+  @ViewChild('groupDiv3') groupDiv3: ElementRef;
+  canStep = 1;
   canvas1() {
     var canvas = this.canvasId1.nativeElement;
     var ctx = canvas.getContext("2d");
@@ -331,10 +302,8 @@ export class ProductDetailComponent implements OnInit {
       };
     }
   
-  };
-  
-   canvas2() {
-  
+  }
+  canvas2() {
     var canvas = this.canvasId2.nativeElement;
     var ctx = canvas.getContext("2d");
   
@@ -383,10 +352,8 @@ export class ProductDetailComponent implements OnInit {
         }
       };
     }
-  
-  };
-  
-   canvas3() {
+  }
+  canvas3() {
     var canvas = this.canvasId3.nativeElement;
     var ctx = canvas.getContext("2d");
     var pfo = this.imageSrc;
@@ -437,8 +404,7 @@ export class ProductDetailComponent implements OnInit {
         }
       };
     }
-  };
-
+  }
   clickpreview(){
     setTimeout(() => {
       this.canvas1()
@@ -451,13 +417,7 @@ export class ProductDetailComponent implements OnInit {
       this.updateItems();
     }, 300);
   }
-  @ViewChild('group') group: ElementRef;
-  @ViewChild('groupDiv1') groupDiv1: ElementRef;
-  @ViewChild('groupDiv2') groupDiv2: ElementRef;
-  @ViewChild('groupDiv3') groupDiv3: ElementRef;
-  canStep = 1;
-  updateItems()
-  { 
+  updateItems(){ 
     if(this.canStep == 1){
       this.groupDiv1.nativeElement.classList.add('current');
       this.groupDiv2.nativeElement.classList.remove('current');
@@ -473,7 +433,6 @@ export class ProductDetailComponent implements OnInit {
     }
   }
   nextClick(){
-    console.log(this.canStep);
     if(this.canStep < 3){
        this.canStep = this.canStep + 1;
        this.updateItems();

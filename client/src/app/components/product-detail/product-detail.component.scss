@@ -147,9 +147,10 @@
   cursor: pointer;
   position: absolute;
   left: 40px;
-  max-width: 350px;
-  height: 230px;
-  max-height: 240px;
+  max-width: 347px;
+  max-height: 236px;
+  min-width: 347px;
+  min-height: 236px;
   object-fit: cover;
 }
 
@@ -731,4 +732,13 @@ float: right;
 #prev{
 float: left;
 margin-left:40px;
+}
+.dib_btn{
+  pointer-events: none;
 } 
+
+.left-sidebar .design-tools-list li:hover i.icon {
+  background-color: #ffdc00;
+  border-color: #ffdc00;
+  color: #000;
+}

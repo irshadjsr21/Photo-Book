@@ -36,15 +36,18 @@
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner">
                   <div class="item active">
-                    <img src="../../../assets/images/mug-1a.jpg" alt="Los Angeles" style="width:100%;">
+                    <img *ngIf="isSelected == 1" src="../../../assets/images/mug-1a.jpg" alt="Los Angeles" style="width:100%;">
+                    <img *ngIf="isSelected == 2" src="../../../assets/images/b_mug-1.jpg" alt="Los Angeles" style="width:100%;">
                   </div>
 
                   <div class="item">
-                    <img src="../../../assets/images/mug-1b.jpg" alt="Chicago" style="width:100%;">
+                    <img *ngIf="isSelected == 1" src="../../../assets/images/mug-1b.jpg" alt="Chicago" style="width:100%;">
+                    <img *ngIf="isSelected == 2" src="../../../assets/images/b_mug-2.jpg" alt="Chicago" style="width:100%;">
                   </div>
 
                   <div class="item">
-                    <img src="../../../assets/images/mug-1c.jpg" alt="New york" style="width:100%;">
+                    <img *ngIf="isSelected == 1" src="../../../assets/images/mug-1c.jpg" alt="New york" style="width:100%;">
+                    <img *ngIf="isSelected == 2" src="../../../assets/images/b_mug-3.jpg" alt="New york" style="width:100%;">
                   </div>
                 </div>
 
@@ -69,10 +72,10 @@
                 <span>Select Color</span>
               </label>
               <label class="radio-inline">
-                <input type="radio" name="optradioz">White
+                <input type="radio" value="1" [checked]="isSelected === 1" (change)="onSelectionChange(1)"  id="point1" name="options">White
               </label>
               <label class="radio-inline">
-                <input type="radio" name="optradioz">Black
+                <input type="radio" value="2" [checked]="isSelected === 2" (change)="onSelectionChange(2)" id="point2" name="options">Black
               </label>
             </div>
           </div>
@@ -102,15 +105,18 @@
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner">
                   <div class="item active">
-                    <img src="../../../assets/images/mug-3.jpg" alt="Los Angeles" style="width:100%;">
+                    <img  *ngIf="isSelected1 == 1" src="../../../assets/images/mug-3.jpg" alt="Los Angeles" style="width:100%;">
+                    <img *ngIf="isSelected1 == 2" src="../../../assets/images/bm_mug-1.jpg" alt="Los Angeles" style="width:100%;">
                   </div>
 
                   <div class="item">
-                    <img src="../../../assets/images/mug-3a.jpg" alt="Chicago" style="width:100%;">
+                    <img *ngIf="isSelected1 == 1" src="../../../assets/images/mug-3a.jpg" alt="Chicago" style="width:100%;">
+                    <img *ngIf="isSelected1 == 2" src="../../../assets/images/bm_mug-2.jpg" alt="Chicago" style="width:100%;">
                   </div>
 
                   <div class="item">
-                    <img src="../../../assets/images/mug-3b.jpg" alt="New york" style="width:100%;">
+                    <img *ngIf="isSelected1 == 1" src="../../../assets/images/mug-3b.jpg" alt="New york" style="width:100%;">
+                    <img *ngIf="isSelected1 == 2" src="../../../assets/images/bm_mug-3.jpg" alt="New york" style="width:100%;">
                   </div>
                 </div>
 
@@ -135,10 +141,10 @@
                 <span>Select Color</span>
               </label>
               <label class="radio-inline">
-                <input type="radio" name="optradio">White
+                <input type="radio" value="1" [checked]="isSelected1 === 1" (change)="onSelectionChange1(1)"  id="point11" name="options1">White
               </label>
               <label class="radio-inline">
-                <input type="radio" name="optradio">Black
+                <input type="radio" value="2" [checked]="isSelected1 === 2" (change)="onSelectionChange1(2)" id="point21" name="options1">Black
               </label>
             </div>
           </div>
