@@ -103,6 +103,13 @@ module.exports.wallCalenderCategory = [
         .withMessage('Name is Required')
 ]
 
+module.exports.photoBookCategory = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required')
+]
+
 module.exports.mug = [
     body('name')
         .not()
@@ -130,6 +137,17 @@ module.exports.desktopCalender = [
 ]
 
 module.exports.wallCalender = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required'),
+    body('price')
+        .not()
+        .isEmpty()
+        .withMessage('Price is Required')
+]
+
+module.exports.photoBook = [
     body('name')
         .not()
         .isEmpty()

@@ -161,7 +161,9 @@ module.exports.putMug = (req, res, next) => {
                 });
             }
 
-            deleteImage(mug.imageUrl);
+            if(userInput.imageUrl) {
+                deleteImage(mug.imageUrl);
+            }
 
             for(const key in userInput) {
                 mug[key] = userInput[key];

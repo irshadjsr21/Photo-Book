@@ -1,10 +1,10 @@
-const DesktopCalenderCategory = require('../../../models/desktopCalenderCategory');
-const DesktopCalender = require('../../../models/desktopCalender');
+const PhotoBookCategory = require('../../../models/photoBookCategory');
+const PhotoBook = require('../../../models/photoBook');
 const { validationResult } = require('express-validator/check');
 const { deleteImage } = require('../../../utils/helperFunctions');
 
-// Add DesktopCalender Category
-module.exports.postDesktopCalender = (req, res, next) => {
+// Add PhotoBook Category
+module.exports.postPhotoBook = (req, res, next) => {
     if(!req.user) {
         return;
     }
@@ -19,7 +19,7 @@ module.exports.postDesktopCalender = (req, res, next) => {
         name: req.body.name,
         price: req.body.price,
         imageUrl: `/uploads/${req.file.filename}`,
-        desktopCalenderCategoryId: req.body.desktopCalenderCategoryId
+        photoBookCategoryId: req.body.photoBookCategoryId
     };
 
     // Extracting Validation Errors from Express Validator
@@ -34,22 +34,22 @@ module.exports.postDesktopCalender = (req, res, next) => {
         });
     }
 
-    DesktopCalenderCategory.findByPk(userInput.desktopCalenderCategoryId)
+    PhotoBookCategory.findByPk(userInput.photoBookCategoryId)
         .then(category => {
             if(!category) {
                 deleteImage(userInput.imageUrl);
                 return res.status(404).json({
-                    msg: ['No DesktopCalender Category Found']
+                    msg: ['No PhotoBook Category Found']
                 });
             }
             
-            // Crate new DesktopCalender
-            const desktopCalender = new DesktopCalender(userInput);
+            // Crate new PhotoBook
+            const photoBook = new PhotoBook(userInput);
         
-            desktopCalender.save()
+            photoBook.save()
                 .then(() => {
                     res.json({
-                        msg : ['DesktopCalender created Successfully']
+                        msg : ['PhotoBook created Successfully']
                     });
                 })
                 .catch(error => {
@@ -61,8 +61,8 @@ module.exports.postDesktopCalender = (req, res, next) => {
         });
 }
 
-// Returns DesktopCalender
-module.exports.getDesktopCalender = (req, res, next) => {
+// Returns PhotoBook
+module.exports.getPhotoBook = (req, res, next) => {
     if(!req.user) {
         return;
     }
@@ -71,14 +71,14 @@ module.exports.getDesktopCalender = (req, res, next) => {
     if(req.query.id) {
         options.id = req.query.id;
     } else if (req.query.category) {
-        options.desktopCalenderCategoryId = req.query.category;
+        options.photoBookCategoryId = req.query.category;
     }
 
-    // Find All DesktopCalender Categories
-    DesktopCalender.findAll({ where: options })
-        .then(desktopCalenders => {
+    // Find All PhotoBook Categories
+    PhotoBook.findAll({ where: options })
+        .then(photoBooks => {
             res.json({
-                result: desktopCalenders
+                result: photoBooks
             });
         })
         .catch(error => {
@@ -86,28 +86,28 @@ module.exports.getDesktopCalender = (req, res, next) => {
         });
 }
 
-// Deletes DesktopCalender
-module.exports.deleteDesktopCalender = (req, res, next) => {
+// Deletes PhotoBook
+module.exports.deletePhotoBook = (req, res, next) => {
     if(!req.user) {
         return;
     }
 
     const id = req.params.id;
 
-    // Find DesktopCalender
-    DesktopCalender.findByPk(id)
-        .then(desktopCalender => {
-            if(!desktopCalender) {
+    // Find PhotoBook
+    PhotoBook.findByPk(id)
+        .then(photoBook => {
+            if(!photoBook) {
                 return res.status(404).json({
-                    msg: ['No DesktopCalender Found']
+                    msg: ['No PhotoBook Found']
                 });
             }
 
-            desktopCalender.destroy()
+            photoBook.destroy()
                 .then(() => {
-                    deleteImage(desktopCalender.imageUrl);
+                    deleteImage(photoBook.imageUrl);
                     res.json({
-                        msg: ['DesktopCalender Deleted Successfully']
+                        msg: ['PhotoBook Deleted Successfully']
                     });
                 })
                 .catch(error => {
@@ -119,8 +119,8 @@ module.exports.deleteDesktopCalender = (req, res, next) => {
         });
 }
 
-// Edit DesktopCalender
-module.exports.putDesktopCalender = (req, res, next) => {
+// Edit PhotoBook
+module.exports.putPhotoBook = (req, res, next) => {
     if(!req.user) {
         return;
     }
@@ -147,30 +147,30 @@ module.exports.putDesktopCalender = (req, res, next) => {
         });
     }
 
-    // Find DesktopCalender
-    DesktopCalender.findByPk(id)
-        .then(desktopCalender => {
-            if(!desktopCalender) {
+    // Find PhotoBook
+    PhotoBook.findByPk(id)
+        .then(photoBook => {
+            if(!photoBook) {
                 if(userInput.imageUrl) {
                     deleteImage(userInput.imageUrl);
                 }
                 return res.status(404).json({
-                    msg: ['No DesktopCalender Found']
+                    msg: ['No PhotoBook Found']
                 });
             }
 
             if(userInput.imageUrl) {
-                deleteImage(desktopCalender.imageUrl);
+                deleteImage(photoBook.imageUrl);
             }
 
             for(const key in userInput) {
-                desktopCalender[key] = userInput[key];
+                photoBook[key] = userInput[key];
             }
             
-            desktopCalender.save()
+            photoBook.save()
                 .then(() => {
                     res.json({
-                        msg: ['DesktopCalender Edited Successfully']
+                        msg: ['PhotoBook Edited Successfully']
                     });
                 })
                 .catch(error => {
