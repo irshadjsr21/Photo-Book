@@ -110,6 +110,20 @@ module.exports.photoBookCategory = [
         .withMessage('Name is Required')
 ]
 
+module.exports.mobileCoverBrand = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required')
+]
+
+module.exports.mobileCoverModel = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required')
+]
+
 module.exports.mug = [
     body('name')
         .not()
@@ -148,6 +162,17 @@ module.exports.wallCalender = [
 ]
 
 module.exports.photoBook = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required'),
+    body('price')
+        .not()
+        .isEmpty()
+        .withMessage('Price is Required')
+]
+
+module.exports.mobileCover = [
     body('name')
         .not()
         .isEmpty()

@@ -19,6 +19,11 @@ const DesktopCalenderCategory = require('./models/desktopCalenderCategory');
 const DesktopCalender = require('./models/desktopCalender');
 const WallCalenderCategory = require('./models/wallCalenderCategory');
 const WallCalender = require('./models/wallCalender');
+const PhotoBookCategory = require('./models/photoBookCategory');
+const PhotoBook = require('./models/photoBook');
+const MobileCoverBrand = require('./models/mobileCoverBrand');
+const MobileCoverModel = require('./models/mobileCoverModel');
+const MobileCover = require('./models/mobileCover');
 
 // Importing Routers
 const routers = require('./routes/index');
@@ -63,6 +68,9 @@ app.use((error, req, res, next) => {
 Mug.belongsTo(MugCategory);
 DesktopCalender.belongsTo(DesktopCalenderCategory);
 WallCalender.belongsTo(WallCalenderCategory);
+PhotoBook.belongsTo(PhotoBookCategory);
+MobileCoverModel.belongsTo(MobileCoverBrand);
+MobileCover.belongsTo(MobileCoverModel);
 Gallary.belongsTo(User);
 Address.hasOne(User, { foreignKey: 'deliveryAddressId' });
 Address.hasOne(User, { foreignKey: 'billingAddressId' });
