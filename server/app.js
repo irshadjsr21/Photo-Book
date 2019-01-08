@@ -17,6 +17,8 @@ const Gallary = require('./models/gallary');
 const Address = require('./models/address');
 const DesktopCalenderCategory = require('./models/desktopCalenderCategory');
 const DesktopCalender = require('./models/desktopCalender');
+const WallCalenderCategory = require('./models/wallCalenderCategory');
+const WallCalender = require('./models/wallCalender');
 
 // Importing Routers
 const routers = require('./routes/index');
@@ -48,6 +50,9 @@ app.use((req, res) => {
 
 // Server Error
 app.use((error, req, res, next) => {
+    if(res.statusCode) {
+        return ;
+    }
     console.log(error);
     res.status(500).json({
         msg: ['Some Internal Error Occured']
@@ -57,6 +62,7 @@ app.use((error, req, res, next) => {
 // Database Relations
 Mug.belongsTo(MugCategory);
 DesktopCalender.belongsTo(DesktopCalenderCategory);
+WallCalender.belongsTo(WallCalenderCategory);
 Gallary.belongsTo(User);
 Address.hasOne(User, { foreignKey: 'deliveryAddressId' });
 Address.hasOne(User, { foreignKey: 'billingAddressId' });

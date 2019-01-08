@@ -96,6 +96,13 @@ module.exports.desktopCalenderCategory = [
         .withMessage('Name is Required')
 ]
 
+module.exports.wallCalenderCategory = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required')
+]
+
 module.exports.mug = [
     body('name')
         .not()
@@ -112,6 +119,17 @@ module.exports.mug = [
 ]
 
 module.exports.desktopCalender = [
+    body('name')
+        .not()
+        .isEmpty()
+        .withMessage('Name is Required'),
+    body('price')
+        .not()
+        .isEmpty()
+        .withMessage('Price is Required')
+]
+
+module.exports.wallCalender = [
     body('name')
         .not()
         .isEmpty()
