@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RequestOptions, Headers, Http, URLSearchParams } from '@angular/http';
 import { HttpParams } from '@angular/common/http';
 import { ResponseContentType, RequestContentType, ResponseType } from './enum';
-import { Observable,throwError} from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { AppSettings } from './AppSettings';
 import { Router } from '@angular/router';
@@ -10,16 +10,14 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class ApiServiceService {
-
-  constructor(
-    private http: Http,
-    private router: Router
-  ) {}
-  get(path: string,
+  constructor(private http: Http, private router: Router) {}
+  get(
+    path: string,
     params: Object,
     acceptType?: ResponseContentType,
-    contentType?: RequestContentType): Observable<any> {
-    let httpParams = new HttpParams();
+    contentType?: RequestContentType
+  ): Observable<any> {
+    const httpParams = new HttpParams();
 
     if (params) {
       for (const key in params) {
@@ -27,17 +25,20 @@ export class ApiServiceService {
       }
     }
 
-    return this.http.get(`${AppSettings.ApiBaseUrl}${path}`,
-      {
-        headers: this.getHeaders(contentType, acceptType),
+    return this.http
+      .get(`${AppSettings.ApiBaseUrl}${path}`, {
+        headers: this.getHeaders(contentType, acceptType)
         //params: httpParams
       })
       .pipe(
-        map(res => acceptType && acceptType != ResponseContentType.Json ? res : res.json())
+        map(res =>
+          acceptType && acceptType != ResponseContentType.Json
+            ? res
+            : res.json()
+        )
       )
       .pipe(
         catchError(error => {
-          debugger;
           if (error.status === 401) {
             localStorage.clear();
             this.redirectToLogin();
@@ -46,21 +47,34 @@ export class ApiServiceService {
         })
       );
   }
-  put(path: string,
+  put(
+    path: string,
     body: Object = {},
     acceptType?: ResponseContentType,
-    contentType?: RequestContentType): Observable<any> {
-
+    contentType?: RequestContentType
+  ): Observable<any> {
     console.log(path + ' : ' + JSON.stringify(body));
 
-    let options = new RequestOptions({ headers: this.getHeaders(contentType, acceptType) });
+    let options = new RequestOptions({
+      headers: this.getHeaders(contentType, acceptType)
+    });
 
-    return this.http.put(
-      `${AppSettings.ApiBaseUrl}${path}`,
-      contentType === RequestContentType.FORM ? this.getUrlParams(body) : contentType === RequestContentType.FORM_DATA ? this.getFormData(body) : body,
-      options)
+    return this.http
+      .put(
+        `${AppSettings.ApiBaseUrl}${path}`,
+        contentType === RequestContentType.FORM
+          ? this.getUrlParams(body)
+          : contentType === RequestContentType.FORM_DATA
+          ? this.getFormData(body)
+          : body,
+        options
+      )
       .pipe(
-        map(res => acceptType && acceptType !== ResponseContentType.Json ? res : res.json())
+        map(res =>
+          acceptType && acceptType !== ResponseContentType.Json
+            ? res
+            : res.json()
+        )
       )
       .pipe(
         catchError(error => {
@@ -68,34 +82,48 @@ export class ApiServiceService {
         })
       );
   }
-  post(path: string,
+  post(
+    path: string,
     body: Object = {},
     acceptType?: ResponseContentType,
-    contentType?: RequestContentType): Observable<any> {
-    return this.postAs(path, body, acceptType, contentType)
-      .pipe(
-        catchError(error => {
-          return this.formatErrors(error, path, body, acceptType, contentType);
-        })
-      );
+    contentType?: RequestContentType
+  ): Observable<any> {
+    return this.postAs(path, body, acceptType, contentType).pipe(
+      catchError(error => {
+        return this.formatErrors(error, path, body, acceptType, contentType);
+      })
+    );
   }
-  postAs(path: string,
+  postAs(
+    path: string,
     body: Object = {},
     acceptType?: ResponseContentType,
     contentType?: RequestContentType,
-    skipToken = false): Observable<any> {
-
+    skipToken = false
+  ): Observable<any> {
     console.log(path + ' : ' + JSON.stringify(body));
 
-    let options = new RequestOptions({ headers: this.getHeaders(contentType, acceptType, skipToken) });
+    let options = new RequestOptions({
+      headers: this.getHeaders(contentType, acceptType, skipToken)
+    });
 
-    return this.http.post(
-      `${AppSettings.ApiBaseUrl}${path}`,
-      contentType === RequestContentType.FORM ? this.getUrlParams(body) : contentType === RequestContentType.FORM_DATA ? this.getFormData(body) : body,
-      options)
-      .pipe(
-        map(res => acceptType && acceptType !== ResponseContentType.Json ? res : res.json())
+    return this.http
+      .post(
+        `${AppSettings.ApiBaseUrl}${path}`,
+        contentType === RequestContentType.FORM
+          ? this.getUrlParams(body)
+          : contentType === RequestContentType.FORM_DATA
+          ? this.getFormData(body)
+          : body,
+        options
       )
+      .pipe(
+        map(res =>
+          acceptType && acceptType !== ResponseContentType.Json
+            ? res
+            : res.json()
+        )
+      );
   }
   getUrlParams(body: Object): URLSearchParams {
     let httpParams = new URLSearchParams();
@@ -119,8 +147,7 @@ export class ApiServiceService {
           data.forEach(element => {
             formData.append(key, element);
           });
-        }
-        else {
+        } else {
           formData.append(key, data);
         }
       }
@@ -133,43 +160,39 @@ export class ApiServiceService {
     path: string,
     body: Object = {},
     acceptType?: ResponseContentType,
-    contentType?: RequestContentType): Observable<any> {
+    contentType?: RequestContentType
+  ): Observable<any> {
     if (error.status === 401) {
-        localStorage.clear();
-        this.redirectToLogin();
-    }
-    else if (error.status === 403) {
+      localStorage.clear();
+      this.redirectToLogin();
+    } else if (error.status === 403) {
       //Access Denied
       let err = error.json();
       //CommonUtils.toaster(err.Message, ResponseType.ERROR);
       this.redirectToHome();
       return throwError(error.json().error || 'Access Denied');
-    }
-    else if (error.status === 409) {
+    } else if (error.status === 409) {
       //Access Denied
       let err = error.json();
       //CommonUtils.toaster(err.Message, ResponseType.ERROR);
       this.redirectToLogin();
       return throwError(error.json().error || 'Access Denied');
-    }
-    else if (error.status === 500) {
+    } else if (error.status === 500) {
       let err = error.json();
       //CommonUtils.toaster(err.Message, ResponseType.ERROR);
       //Internal Server Error
       return throwError(error.json().error || 'Internal Server Error');
-    }
-    else if (error.status === 400) {
+    } else if (error.status === 400) {
       let err = error.json();
       //CommonUtils.toaster(err.Message, ResponseType.ERROR);
       //Bad Request
       return throwError(error.json().error || 'Bad Request');
-    }else if (error.status === 422) {
+    } else if (error.status === 422) {
       let err = error.json();
       //CommonUtils.toaster(err.Message, ResponseType.ERROR);
       //Bad Request
       return throwError(JSON.parse(error._body) || 'Somthing went wrong!');
-    }
-    else {
+    } else {
       return throwError(error.json().error || 'Server error');
     }
   }
@@ -180,7 +203,11 @@ export class ApiServiceService {
     this.router.navigate(['home']);
   }
 
-  getHeaders(contentType: RequestContentType, acceptType: ResponseContentType, skipToken = false) {
+  getHeaders(
+    contentType: RequestContentType,
+    acceptType: ResponseContentType,
+    skipToken = false
+  ) {
     const headersConfig = new Headers();
 
     // headersConfig.append('Access-Control-Allow-Origin', '*');
@@ -195,9 +222,8 @@ export class ApiServiceService {
 
     if (contentType == RequestContentType.FORM_DATA)
       headersConfig.append('enctype', this.getContentType(contentType));
-    else
-      headersConfig.append('Content-Type', this.getContentType(contentType));
-      headersConfig.append('Accept', this.getAcceptType(acceptType));
+    else headersConfig.append('Content-Type', this.getContentType(contentType));
+    headersConfig.append('Accept', this.getAcceptType(acceptType));
 
     if (!skipToken) {
       const token = localStorage.getItem('token');
