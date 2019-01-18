@@ -1,18 +1,12 @@
 const MugCategory = require('../../../models/mugCategory');
 const Mug = require('../../../models/mug');
-const { validationResult } = require('express-validator/check');
-const { deleteImage } = require('../../../utils/helperFunctions');
+const { deleteImage, getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add Mug Category
 module.exports.postMug = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     if(!req.file) {
-        return res.status(422).json({
-            msg: ['Image Is required']
-        });
+        throw getError(422, 'Invalid Image');
     }
 
     const userInput = {
@@ -23,25 +17,18 @@ module.exports.postMug = (req, res, next) => {
         mugCategoryId: req.body.mugCategoryId
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
+    if (errors) {
         deleteImage(userInput.imageUrl);
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+        throw getError(422, 'Invalid Input', errors);
     }
 
     MugCategory.findByPk(userInput.mugCategoryId)
         .then(category => {
             if(!category) {
                 deleteImage(userInput.imageUrl);
-                return res.status(404).json({
-                    msg: ['No Mug Category Found']
-                });
+                throw getError(404, 'No Mug Category Found');
             }
             
             // Crate new Mug
@@ -64,9 +51,6 @@ module.exports.postMug = (req, res, next) => {
 
 // Returns Mug
 module.exports.getMug = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const options = {}; 
     if(req.query.id) {
@@ -89,9 +73,6 @@ module.exports.getMug = (req, res, next) => {
 
 // Deletes Mug
 module.exports.deleteMug = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -99,9 +80,7 @@ module.exports.deleteMug = (req, res, next) => {
     Mug.findByPk(id)
         .then(mug => {
             if(!mug) {
-                return res.status(404).json({
-                    msg: ['No Mug Found']
-                });
+                throw getError(404, 'No Mug Category Found');
             }
 
             mug.destroy()
@@ -122,9 +101,6 @@ module.exports.deleteMug = (req, res, next) => {
 
 // Edit Mug
 module.exports.putMug = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const id = req.params.id;
 
@@ -138,15 +114,10 @@ module.exports.putMug = (req, res, next) => {
         userInput.imageUrl = `/uploads/${req.file.filename}`;
     }
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find Mug
@@ -156,12 +127,12 @@ module.exports.putMug = (req, res, next) => {
                 if(userInput.imageUrl) {
                     deleteImage(userInput.imageUrl);
                 }
-                return res.status(404).json({
-                    msg: ['No Mug Found']
-                });
+                throw getError(404, 'No Mug Found');
             }
 
-            deleteImage(mug.imageUrl);
+            if(userInput.imageUrl) {
+                deleteImage(mug.imageUrl);
+            }
 
             for(const key in userInput) {
                 mug[key] = userInput[key];

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const config = require('./config');
 const path = require('path');
 const fs = require('fs');
+const { validationResult } = require('express-validator/check');
 
 // To Encrypt Password
 module.exports.encryptPass = (user) => {
@@ -51,3 +52,22 @@ module.exports.deleteImage = (url) => {
         }
     })
 }
+
+module.exports.getError = (status, err, msg) => {
+  const error = new Error(err);
+  error.statusCode = status;
+  error.customError = err;
+  error.msg = msg;
+  return error;
+};
+
+// Extracting Validation Errors from Express Validator
+module.exports.getValidationResult = req => {
+  const validationError = validationResult(req).array();
+
+  if (validationError.length > 0) {
+      return validationError.map(obj => obj.msg);
+  }
+
+  return null;
+};

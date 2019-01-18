@@ -17,6 +17,13 @@ const Gallary = require('./models/gallary');
 const Address = require('./models/address');
 const DesktopCalenderCategory = require('./models/desktopCalenderCategory');
 const DesktopCalender = require('./models/desktopCalender');
+const WallCalenderCategory = require('./models/wallCalenderCategory');
+const WallCalender = require('./models/wallCalender');
+const PhotoBookCategory = require('./models/photoBookCategory');
+const PhotoBook = require('./models/photoBook');
+const MobileCoverBrand = require('./models/mobileCoverBrand');
+const MobileCoverModel = require('./models/mobileCoverModel');
+const MobileCover = require('./models/mobileCover');
 
 // Importing Routers
 const routers = require('./routes/index');
@@ -48,15 +55,26 @@ app.use((req, res) => {
 
 // Server Error
 app.use((error, req, res, next) => {
-    console.log(error);
-    res.status(500).json({
-        msg: ['Some Internal Error Occured']
-    });
+    const status = error.statusCode || 500;
+    let response = {
+        error: error.customError || 'Some Internal Error Occured',
+    };
+    if (!error.customError) {
+        console.log(error);
+    }
+    if (error.msg) {
+        response.msg = error.msg;
+    }
+    return res.status(status).json(response);
 });
 
 // Database Relations
 Mug.belongsTo(MugCategory);
 DesktopCalender.belongsTo(DesktopCalenderCategory);
+WallCalender.belongsTo(WallCalenderCategory);
+PhotoBook.belongsTo(PhotoBookCategory);
+MobileCoverModel.belongsTo(MobileCoverBrand);
+MobileCover.belongsTo(MobileCoverModel);
 Gallary.belongsTo(User);
 Address.hasOne(User, { foreignKey: 'deliveryAddressId' });
 Address.hasOne(User, { foreignKey: 'billingAddressId' });

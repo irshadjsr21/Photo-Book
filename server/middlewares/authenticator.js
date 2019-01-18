@@ -1,3 +1,4 @@
+const { getError } = require('../utils/helperFunctions');
 
 // MiddleWare To Check If the User is Authorized
 
@@ -12,19 +13,11 @@ module.exports = (role) => {
                 next();
             }
             else {
-                return res.status(401).json({
-                    msg: [
-                        "Unauthorized User"
-                    ]
-                });
+                throw getError(401, 'Unauthorized User');
             }
         }
         else{
-            return res.status(401).json({
-                msg: [
-                    "Unauthorized User"
-                ]
-            });
+            throw getError(401, 'Unauthorized User');
         }
     }
 }

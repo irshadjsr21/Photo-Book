@@ -1,5 +1,5 @@
 const Gallary = require('../models/gallary');
-const { deleteImage } = require('../utils/helperFunctions');
+const { deleteImage, getError } = require('../utils/helperFunctions');
 
 module.exports.postGallary = (req, res, next) => {
     if(!req.user) {
@@ -7,9 +7,7 @@ module.exports.postGallary = (req, res, next) => {
     }
 
     if(!req.file) {
-        return res.status(422).json({
-            msg: ['Invalid Image']
-        });
+        throw getError(422, 'Invalid Image');
     }
 
     // Create new Entry in gallary
@@ -53,9 +51,7 @@ module.exports.deleteGallary = (req, res, next) => {
     Gallary.findOne({ where: { userId: req.user.id, id: id } })
         .then(gallary => {
             if(!gallary) {
-                return res.status(404).json({
-                    msg: ['No Image Found']
-                });
+                throw getError(404, 'No Image Found');
             }
 
             gallary.destroy()

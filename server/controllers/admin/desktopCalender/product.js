@@ -1,18 +1,12 @@
 const DesktopCalenderCategory = require('../../../models/desktopCalenderCategory');
 const DesktopCalender = require('../../../models/desktopCalender');
-const { validationResult } = require('express-validator/check');
-const { deleteImage } = require('../../../utils/helperFunctions');
+const { deleteImage, getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add DesktopCalender Category
 module.exports.postDesktopCalender = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     if(!req.file) {
-        return res.status(422).json({
-            msg: ['Image Is required']
-        });
+        throw getError(422, 'Invalid Image');
     }
 
     const userInput = {
@@ -22,25 +16,18 @@ module.exports.postDesktopCalender = (req, res, next) => {
         desktopCalenderCategoryId: req.body.desktopCalenderCategoryId
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
+    if (errors) {
         deleteImage(userInput.imageUrl);
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+        throw getError(422, 'Invalid Input', errors);
     }
 
     DesktopCalenderCategory.findByPk(userInput.desktopCalenderCategoryId)
         .then(category => {
             if(!category) {
                 deleteImage(userInput.imageUrl);
-                return res.status(404).json({
-                    msg: ['No DesktopCalender Category Found']
-                });
+                throw getError(404, 'No DesktopCalender Category Found');
             }
             
             // Crate new DesktopCalender
@@ -63,9 +50,6 @@ module.exports.postDesktopCalender = (req, res, next) => {
 
 // Returns DesktopCalender
 module.exports.getDesktopCalender = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const options = {}; 
     if(req.query.id) {
@@ -88,9 +72,6 @@ module.exports.getDesktopCalender = (req, res, next) => {
 
 // Deletes DesktopCalender
 module.exports.deleteDesktopCalender = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -98,9 +79,7 @@ module.exports.deleteDesktopCalender = (req, res, next) => {
     DesktopCalender.findByPk(id)
         .then(desktopCalender => {
             if(!desktopCalender) {
-                return res.status(404).json({
-                    msg: ['No DesktopCalender Found']
-                });
+                throw getError(404, 'No DesktopCalender Found');
             }
 
             desktopCalender.destroy()
@@ -121,9 +100,6 @@ module.exports.deleteDesktopCalender = (req, res, next) => {
 
 // Edit DesktopCalender
 module.exports.putDesktopCalender = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -136,15 +112,10 @@ module.exports.putDesktopCalender = (req, res, next) => {
         userInput.imageUrl = `/uploads/${req.file.filename}`;
     }
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find DesktopCalender
@@ -154,12 +125,12 @@ module.exports.putDesktopCalender = (req, res, next) => {
                 if(userInput.imageUrl) {
                     deleteImage(userInput.imageUrl);
                 }
-                return res.status(404).json({
-                    msg: ['No DesktopCalender Found']
-                });
+                throw getError(404, 'No DesktopCalender Found');
             }
 
-            deleteImage(desktopCalender.imageUrl);
+            if(userInput.imageUrl) {
+                deleteImage(desktopCalender.imageUrl);
+            }
 
             for(const key in userInput) {
                 desktopCalender[key] = userInput[key];
