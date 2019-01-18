@@ -1,35 +1,25 @@
 const MobileCoverBrand = require('../../../models/mobileCoverBrand');
 const MobileCoverModel = require('../../../models/mobileCoverModel');
-const { validationResult } = require('express-validator/check');
+const { getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add MobileCoverModel Category
 module.exports.postMobileCoverModel = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const userInput = {
         name: req.body.name,
         mobileCoverBrandId: req.body.mobileCoverBrandId
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     MobileCoverBrand.findByPk(userInput.mobileCoverBrandId)
         .then(category => {
             if(!category) {
-                return res.status(404).json({
-                    msg: ['No Mobile Cover Brand Found']
-                });
+                throw getError(404, 'No Mobile Cover Brand Found');
             }
             
             // Crate new MobileCoverModel
@@ -52,9 +42,6 @@ module.exports.postMobileCoverModel = (req, res, next) => {
 
 // Returns MobileCoverModel
 module.exports.getMobileCoverModel = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const options = {}; 
     if(req.query.id) {
@@ -77,9 +64,6 @@ module.exports.getMobileCoverModel = (req, res, next) => {
 
 // Deletes MobileCoverModel
 module.exports.deleteMobileCoverModel = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -87,9 +71,7 @@ module.exports.deleteMobileCoverModel = (req, res, next) => {
     MobileCoverModel.findByPk(id)
         .then(mobileCoverModel => {
             if(!mobileCoverModel) {
-                return res.status(404).json({
-                    msg: ['No MobileCoverModel Found']
-                });
+                throw getError(404, 'No Mobile Cover Model Found');
             }
 
             mobileCoverModel.destroy()
@@ -109,9 +91,6 @@ module.exports.deleteMobileCoverModel = (req, res, next) => {
 
 // Edit MobileCoverModel
 module.exports.putMobileCoverModel = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const id = req.params.id;
 
@@ -119,24 +98,17 @@ module.exports.putMobileCoverModel = (req, res, next) => {
         name: req.body.name,
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find MobileCoverModel
     MobileCoverModel.findByPk(id)
         .then(mobileCoverModel => {
             if(!mobileCoverModel) {
-                return res.status(404).json({
-                    msg: ['No MobileCoverModel Found']
-                });
+                throw getError(404, 'No Mobile Cover Model Found');
             }
 
             for(const key in userInput) {

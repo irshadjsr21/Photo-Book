@@ -55,13 +55,17 @@ app.use((req, res) => {
 
 // Server Error
 app.use((error, req, res, next) => {
-    if(res.statusCode) {
-        return ;
+    const status = error.statusCode || 500;
+    let response = {
+        error: error.customError || 'Some Internal Error Occured',
+    };
+    if (!error.customError) {
+        console.log(error);
     }
-    console.log(error);
-    res.status(500).json({
-        msg: ['Some Internal Error Occured']
-    });
+    if (error.msg) {
+        response.msg = error.msg;
+    }
+    return res.status(status).json(response);
 });
 
 // Database Relations

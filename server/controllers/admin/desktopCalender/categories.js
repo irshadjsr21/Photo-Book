@@ -1,25 +1,17 @@
 const DesktopCalenderCategory = require('../../../models/desktopCalenderCategory');
-const { validationResult } = require('express-validator/check');
+const { getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add DesktopCalender Category
 module.exports.postDesktopCalenderCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
-    
+
     const userInput = {
         name: req.body.name
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Crate new DesktopCalender Category
@@ -38,9 +30,6 @@ module.exports.postDesktopCalenderCategory = (req, res, next) => {
 
 // Returns DesktopCalender Categories
 module.exports.getDesktopCalenderCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     // Find All DesktopCalender Categories
     DesktopCalenderCategory.findAll()
@@ -56,9 +45,6 @@ module.exports.getDesktopCalenderCategory = (req, res, next) => {
 
 // Deletes DesktopCalender Category
 module.exports.deleteDesktopCalenderCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -66,9 +52,7 @@ module.exports.deleteDesktopCalenderCategory = (req, res, next) => {
     DesktopCalenderCategory.findByPk(id)
         .then(desktopCalender => {
             if(!desktopCalender) {
-                return res.status(404).json({
-                    msg: ['No DesktopCalender Category Found']
-                });
+                throw getError(404, 'No DesktopCalender Category Found');
             }
 
             desktopCalender.destroy()
@@ -88,30 +72,20 @@ module.exports.deleteDesktopCalenderCategory = (req, res, next) => {
 
 // Edit DesktopCalender Category
 module.exports.putDesktopCalenderCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const id = req.params.id;
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find DesktopCalender Category
     DesktopCalenderCategory.findByPk(id)
         .then(desktopCalender => {
             if(!desktopCalender) {
-                return res.status(404).json({
-                    msg: ['No DesktopCalender Category Found']
-                });
+                throw getError(404, 'No DesktopCalender Category Found');
             }
 
             desktopCalender.name = req.body.name;

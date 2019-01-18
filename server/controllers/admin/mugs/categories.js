@@ -1,25 +1,17 @@
 const MugCategory = require('../../../models/mugCategory');
-const { validationResult } = require('express-validator/check');
+const { getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add Mug Category
 module.exports.postMugCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const userInput = {
         name: req.body.name
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Crate new Mug Category
@@ -38,9 +30,6 @@ module.exports.postMugCategory = (req, res, next) => {
 
 // Returns Mug Categories
 module.exports.getMugCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     // Find All Mug Categories
     MugCategory.findAll()
@@ -56,9 +45,6 @@ module.exports.getMugCategory = (req, res, next) => {
 
 // Deletes Mug Category
 module.exports.deleteMugCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -66,9 +52,8 @@ module.exports.deleteMugCategory = (req, res, next) => {
     MugCategory.findByPk(id)
         .then(mug => {
             if(!mug) {
-                return res.status(404).json({
-                    msg: ['No Mug Category Found']
-                });
+                throw getError(404, 'No Mug Category Found');
+
             }
 
             mug.destroy()
@@ -88,30 +73,20 @@ module.exports.deleteMugCategory = (req, res, next) => {
 
 // Edit Mug Category
 module.exports.putMugCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const id = req.params.id;
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find Mug Category
     MugCategory.findByPk(id)
         .then(mug => {
             if(!mug) {
-                return res.status(404).json({
-                    msg: ['No Mug Category Found']
-                });
+                throw getError(404, 'No Mug Category Found');
             }
 
             mug.name = req.body.name;

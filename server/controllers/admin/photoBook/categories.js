@@ -1,25 +1,17 @@
 const PhotoBookCategory = require('../../../models/photoBookCategory');
-const { validationResult } = require('express-validator/check');
+const { getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add Photo Book Category
 module.exports.postPhotoBookCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const userInput = {
         name: req.body.name
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Crate new Photo Book Category
@@ -38,9 +30,6 @@ module.exports.postPhotoBookCategory = (req, res, next) => {
 
 // Returns Photo Book Categories
 module.exports.getPhotoBookCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     // Find All Photo Book Categories
     PhotoBookCategory.findAll()
@@ -56,9 +45,6 @@ module.exports.getPhotoBookCategory = (req, res, next) => {
 
 // Deletes Photo Book Category
 module.exports.deletePhotoBookCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -66,9 +52,7 @@ module.exports.deletePhotoBookCategory = (req, res, next) => {
     PhotoBookCategory.findByPk(id)
         .then(photoBook => {
             if(!photoBook) {
-                return res.status(404).json({
-                    msg: ['No Photo Book Category Found']
-                });
+                throw getError(404, 'No Photo Book Category Found');
             }
 
             photoBook.destroy()
@@ -88,30 +72,20 @@ module.exports.deletePhotoBookCategory = (req, res, next) => {
 
 // Edit Photo Book Category
 module.exports.putPhotoBookCategory = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const id = req.params.id;
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find Photo Book Category
     PhotoBookCategory.findByPk(id)
         .then(photoBook => {
             if(!photoBook) {
-                return res.status(404).json({
-                    msg: ['No Photo Book Category Found']
-                });
+                throw getError(404, 'No Photo Book Category Found');
             }
 
             photoBook.name = req.body.name;

@@ -1,18 +1,13 @@
 const MobileCoverModel = require('../../../models/mobileCoverModel');
 const MobileCover = require('../../../models/mobileCover');
-const { validationResult } = require('express-validator/check');
-const { deleteImage } = require('../../../utils/helperFunctions');
+const { deleteImage, getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add MobileCover Category
 module.exports.postMobileCover = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     if(!req.file) {
-        return res.status(422).json({
-            msg: ['Image Is required']
-        });
+        throw getError(422, 'Invalid Image');
+
     }
 
     const userInput = {
@@ -22,25 +17,18 @@ module.exports.postMobileCover = (req, res, next) => {
         mobileCoverModelId: req.body.mobileCoverModelId
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
+    if (errors) {
         deleteImage(userInput.imageUrl);
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+        throw getError(422, 'Invalid Input', errors);
     }
 
     MobileCoverModel.findByPk(userInput.mobileCoverModelId)
         .then(model => {
             if(!model) {
                 deleteImage(userInput.imageUrl);
-                return res.status(404).json({
-                    msg: ['No Mobile Cover Model Found']
-                });
+                throw getError(404, 'No Mobile Cover Model Found');
             }
             
             // Crate new MobileCover
@@ -88,9 +76,6 @@ module.exports.getMobileCover = (req, res, next) => {
 
 // Deletes MobileCover
 module.exports.deleteMobileCover = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -98,9 +83,7 @@ module.exports.deleteMobileCover = (req, res, next) => {
     MobileCover.findByPk(id)
         .then(mobileCover => {
             if(!mobileCover) {
-                return res.status(404).json({
-                    msg: ['No MobileCover Found']
-                });
+                throw getError(404, 'No Mobile Cover Found');
             }
 
             mobileCover.destroy()
@@ -121,9 +104,6 @@ module.exports.deleteMobileCover = (req, res, next) => {
 
 // Edit MobileCover
 module.exports.putMobileCover = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const id = req.params.id;
 
@@ -136,15 +116,10 @@ module.exports.putMobileCover = (req, res, next) => {
         userInput.imageUrl = `/uploads/${req.file.filename}`;
     }
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find MobileCover
@@ -154,9 +129,7 @@ module.exports.putMobileCover = (req, res, next) => {
                 if(userInput.imageUrl) {
                     deleteImage(userInput.imageUrl);
                 }
-                return res.status(404).json({
-                    msg: ['No MobileCover Found']
-                });
+                throw getError(404, 'No Mobile Cover Found');
             }
 
             if(userInput.imageUrl) {

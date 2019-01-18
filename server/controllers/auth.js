@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const Address = require('../models/address');
-const { validationResult } = require('express-validator/check');
-const { signJwt } = require('../utils/helperFunctions');
+const { signJwt, getError, getValidationResult } = require('../utils/helperFunctions');
 
 module.exports.signUp = (req,res, next) => {
 
@@ -11,15 +10,10 @@ module.exports.signUp = (req,res, next) => {
         password: req.body.password
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Count The number of user with same email as req.body.email
@@ -29,10 +23,7 @@ module.exports.signUp = (req,res, next) => {
             // If one or more user is found with same email as req.body.email,
             // Show Error Message
             if(count > 0) {
-                const errors = ['Email Already Exists'];
-                return res.status(422).json({
-                    msg: errors
-                });
+                throw getError(422, 'Email Already Exists');
             } else {
 
                 // If no user is found with the same email create new user
@@ -63,15 +54,10 @@ module.exports.signUp = (req,res, next) => {
 
 module.exports.login = (req, res, next) => {
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find User With Given Email
@@ -100,10 +86,7 @@ module.exports.login = (req, res, next) => {
                                 }
                             });    
                         } else {
-                            let errors = ['Invalid Credentials'];
-                            return res.status(422).json({
-                                msg: errors
-                            });
+                            throw getError(422, 'Invalid Credentials');
                         }
                     })
                     .catch(error => {
@@ -112,10 +95,7 @@ module.exports.login = (req, res, next) => {
             } else {
 
                 // If no user exists => error message
-                let errors = ['Invalid Credentials'];
-                return res.status(422).json({
-                    msg: errors
-                });
+                throw getError(422, 'Invalid Credentials');
             }
         })
         .catch(error => {
@@ -133,9 +113,7 @@ module.exports.getProfile = (req, res, next) => {
     User.findByPk(req.user.id, { attributes: ['id', 'fullName', 'email', 'mobile', 'createdAt', 'updatedAt'] }) 
         .then(user => {
             if(!user) {
-                return res.status(404).json({
-                    msg: ['No User Found']
-                });
+                throw getError(404, 'No User Found');
             }
 
             res.json({
@@ -161,24 +139,17 @@ module.exports.putProfile = (req, res, next) => {
         mobile: req.body.mobile
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find User
     User.findByPk(req.user.id) 
         .then(user => {
             if(!user) {
-                return res.status(404).json({
-                    msg: ['No User Found']
-                });
+                throw getError(404, 'No User Found');
             }
 
             for(const key in userInput) {
@@ -206,15 +177,10 @@ module.exports.changePassword = (req, res, next) => {
         return;
     }
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     let fetchedUser;
@@ -238,9 +204,7 @@ module.exports.changePassword = (req, res, next) => {
                         next(error);
                     });
             } else {
-                res.status(422).json({
-                    msg: ['Incorrect Password']
-                });
+                throw getError(422, 'Incorrect Password');
             }
         })
         .catch(error => {
@@ -262,7 +226,7 @@ module.exports.getAddress = (req, res, next) => {
     User.findByPk(req.user.id)
         .then(user => {
             if(!user) {
-                throw new Error('No User Found');
+                throw getError(404, 'No User Found');
             }
 
             fetchedUser = user;
@@ -303,15 +267,10 @@ module.exports.postDeliveryAddress = (req, res, next) => {
         pincode: req.body.pincode,
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     let fetchedUser;
@@ -320,7 +279,7 @@ module.exports.postDeliveryAddress = (req, res, next) => {
     User.findByPk(req.user.id)
         .then(user => {
             if(!user) {
-                throw new Error('No User Found');
+                throw getError(404, 'No User Found');
             }
 
             fetchedUser = user;
@@ -381,15 +340,10 @@ module.exports.postBillingAddress = (req, res, next) => {
         pincode: req.body.pincode,
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     let fetchedUser;
@@ -398,7 +352,7 @@ module.exports.postBillingAddress = (req, res, next) => {
     User.findByPk(req.user.id)
         .then(user => {
             if(!user) {
-                throw new Error('No User Found');
+                throw getError(404, 'No User Found');
             }
 
             fetchedUser = user;

@@ -1,25 +1,17 @@
 const MobileCoverBrand = require('../../../models/mobileCoverBrand');
-const { validationResult } = require('express-validator/check');
+const { getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add Mobile Cover Brand
 module.exports.postMobileCoverBrand = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const userInput = {
         name: req.body.name
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Crate new Mobile Cover Brand
@@ -38,9 +30,6 @@ module.exports.postMobileCoverBrand = (req, res, next) => {
 
 // Returns Mug Categories
 module.exports.getMobileCoverBrand = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     // Find All Mug Categories
     MobileCoverBrand.findAll()
@@ -56,9 +45,6 @@ module.exports.getMobileCoverBrand = (req, res, next) => {
 
 // Deletes Mobile Cover Brand
 module.exports.deleteMobileCoverBrand = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -66,9 +52,7 @@ module.exports.deleteMobileCoverBrand = (req, res, next) => {
     MobileCoverBrand.findByPk(id)
         .then(brand => {
             if(!brand) {
-                return res.status(404).json({
-                    msg: ['No Mobile Cover Brand Found']
-                });
+                throw getError(404, 'No Mobile Cover Brand Found');
             }
 
             brand.destroy()
@@ -88,30 +72,20 @@ module.exports.deleteMobileCoverBrand = (req, res, next) => {
 
 // Edit Mobile Cover Brand
 module.exports.putMobileCoverBrand = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const id = req.params.id;
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find Mobile Cover Brand
     MobileCoverBrand.findByPk(id)
         .then(brand => {
             if(!brand) {
-                return res.status(404).json({
-                    msg: ['No Mobile Cover Brand Found']
-                });
+                throw getError(404, 'No Mobile Cover Brand Found');
             }
 
             brand.name = req.body.name;

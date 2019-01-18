@@ -1,18 +1,12 @@
 const WallCalenderCategory = require('../../../models/wallCalenderCategory');
 const WallCalender = require('../../../models/wallCalender');
-const { validationResult } = require('express-validator/check');
-const { deleteImage } = require('../../../utils/helperFunctions');
+const { deleteImage, getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add WallCalender Category
 module.exports.postWallCalender = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     if(!req.file) {
-        return res.status(422).json({
-            msg: ['Image Is required']
-        });
+        throw getError(422, 'Invalid Image');
     }
 
     const userInput = {
@@ -22,25 +16,18 @@ module.exports.postWallCalender = (req, res, next) => {
         wallCalenderCategoryId: req.body.wallCalenderCategoryId
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
+    if (errors) {
         deleteImage(userInput.imageUrl);
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+        throw getError(422, 'Invalid Input', errors);
     }
 
     WallCalenderCategory.findByPk(userInput.wallCalenderCategoryId)
         .then(category => {
             if(!category) {
                 deleteImage(userInput.imageUrl);
-                return res.status(404).json({
-                    msg: ['No WallCalender Category Found']
-                });
+                throw getError(404, 'No Wall Calender Category Found');
             }
             
             // Crate new WallCalender
@@ -63,9 +50,6 @@ module.exports.postWallCalender = (req, res, next) => {
 
 // Returns WallCalender
 module.exports.getWallCalender = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const options = {}; 
     if(req.query.id) {
@@ -88,9 +72,6 @@ module.exports.getWallCalender = (req, res, next) => {
 
 // Deletes WallCalender
 module.exports.deleteWallCalender = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -98,9 +79,7 @@ module.exports.deleteWallCalender = (req, res, next) => {
     WallCalender.findByPk(id)
         .then(wallCalender => {
             if(!wallCalender) {
-                return res.status(404).json({
-                    msg: ['No WallCalender Found']
-                });
+                throw getError(404, 'No Wall Calender Found');
             }
 
             wallCalender.destroy()
@@ -121,10 +100,7 @@ module.exports.deleteWallCalender = (req, res, next) => {
 
 // Edit WallCalender
 module.exports.putWallCalender = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
-
+    
     const id = req.params.id;
 
     const userInput = {
@@ -136,15 +112,10 @@ module.exports.putWallCalender = (req, res, next) => {
         userInput.imageUrl = `/uploads/${req.file.filename}`;
     }
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find WallCalender
@@ -154,9 +125,7 @@ module.exports.putWallCalender = (req, res, next) => {
                 if(userInput.imageUrl) {
                     deleteImage(userInput.imageUrl);
                 }
-                return res.status(404).json({
-                    msg: ['No WallCalender Found']
-                });
+                throw getError(404, 'No Wall Calender Found');
             }
 
             deleteImage(wallCalender.imageUrl);

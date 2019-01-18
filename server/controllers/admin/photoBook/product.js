@@ -1,18 +1,12 @@
 const PhotoBookCategory = require('../../../models/photoBookCategory');
 const PhotoBook = require('../../../models/photoBook');
-const { validationResult } = require('express-validator/check');
-const { deleteImage } = require('../../../utils/helperFunctions');
+const { deleteImage, getError, getValidationResult } = require('../../../utils/helperFunctions');
 
 // Add PhotoBook Category
 module.exports.postPhotoBook = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     if(!req.file) {
-        return res.status(422).json({
-            msg: ['Image Is required']
-        });
+        throw getError(422, 'Invalid Image');
     }
 
     const userInput = {
@@ -22,25 +16,18 @@ module.exports.postPhotoBook = (req, res, next) => {
         photoBookCategoryId: req.body.photoBookCategoryId
     };
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
+    if (errors) {
         deleteImage(userInput.imageUrl);
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+        throw getError(422, 'Invalid Input', errors);
     }
 
     PhotoBookCategory.findByPk(userInput.photoBookCategoryId)
         .then(category => {
             if(!category) {
                 deleteImage(userInput.imageUrl);
-                return res.status(404).json({
-                    msg: ['No PhotoBook Category Found']
-                });
+                throw getError(404, 'No Photo Book Category Found');
             }
             
             // Crate new PhotoBook
@@ -63,9 +50,6 @@ module.exports.postPhotoBook = (req, res, next) => {
 
 // Returns PhotoBook
 module.exports.getPhotoBook = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
     
     const options = {}; 
     if(req.query.id) {
@@ -88,9 +72,6 @@ module.exports.getPhotoBook = (req, res, next) => {
 
 // Deletes PhotoBook
 module.exports.deletePhotoBook = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -98,9 +79,7 @@ module.exports.deletePhotoBook = (req, res, next) => {
     PhotoBook.findByPk(id)
         .then(photoBook => {
             if(!photoBook) {
-                return res.status(404).json({
-                    msg: ['No PhotoBook Found']
-                });
+                throw getError(404, 'No Photo Book Found');
             }
 
             photoBook.destroy()
@@ -121,9 +100,6 @@ module.exports.deletePhotoBook = (req, res, next) => {
 
 // Edit PhotoBook
 module.exports.putPhotoBook = (req, res, next) => {
-    if(!req.user) {
-        return;
-    }
 
     const id = req.params.id;
 
@@ -136,15 +112,10 @@ module.exports.putPhotoBook = (req, res, next) => {
         userInput.imageUrl = `/uploads/${req.file.filename}`;
     }
 
-    // Extracting Validation Errors from Express Validator
-    const validationError = validationResult(req).array();
+    const errors = getValidationResult(req);
 
-    // If Validation Error Exists => Show Error Message
-    if(validationError.length > 0) {
-        let errors = validationError.map(obj => obj.msg);
-        return res.status(422).json({
-            msg: errors
-        });
+    if (errors) {
+        throw getError(422, 'Invalid Input', errors);
     }
 
     // Find PhotoBook
@@ -154,9 +125,7 @@ module.exports.putPhotoBook = (req, res, next) => {
                 if(userInput.imageUrl) {
                     deleteImage(userInput.imageUrl);
                 }
-                return res.status(404).json({
-                    msg: ['No PhotoBook Found']
-                });
+                throw getError(404, 'No Photo Book Found');
             }
 
             if(userInput.imageUrl) {
