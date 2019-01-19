@@ -1,6 +1,8 @@
 // Importing Modules
 const express = require('express');
 const path = require('path');
+const { getError } = require('./utils/helperFunctions');
+const authenticator = require('./middlewares/authenticator');
 
 // Importing Config File
 const config = require('./utils/config');
@@ -24,9 +26,26 @@ const PhotoBook = require('./models/photoBook');
 const MobileCoverBrand = require('./models/mobileCoverBrand');
 const MobileCoverModel = require('./models/mobileCoverModel');
 const MobileCover = require('./models/mobileCover');
+const Cart = require('./models/cart');
+const MugCartItem = require('./models/mugCartItem');
+const MugCart = require('./models/mugCart');
 
 // Importing Routers
-const routers = require('./routes/index');
+const authRouter = require('./routes/auth');
+const adminAuthRouter = require('./routes/admin/auth');
+const mugCategoryRouter = require('./routes/admin/mugs/categories');
+const mugRouter = require('./routes/admin/mugs/product');
+const desktopCalenderCategoryRouter = require('./routes/admin/desktopCalender/categories');
+const desktopCalenderRouter = require('./routes/admin/desktopCalender/product');
+const wallCalenderCategoryRouter = require('./routes/admin/wallCalender/categories');
+const wallCalenderRouter = require('./routes/admin/wallCalender/product');
+const photoBookCategoryRouter = require('./routes/admin/photoBook/categories');
+const photoBookRouter = require('./routes/admin/photoBook/product');
+const mobileCoverBrandRouter = require('./routes/admin/mobileCover/brand');
+const mobileCoverModelRouter = require('./routes/admin/mobileCover/model');
+const mobileCoverRouter = require('./routes/admin/mobileCover/product');
+const gallaryRouter = require('./routes/gallary');
+const mugCartRouter = require('./routes/cart/mugCart');
 
 // Importing Middlewares
 const initialMiddlewares = require('./middlewares/initial');
@@ -44,13 +63,29 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(initialMiddlewares);
 
 // Setting up Routes
-app.use('/api', routers);
+app.use('/api', authRouter);
+app.use('/api/admin', adminAuthRouter);
+app.use('/api/admin/mugs/category', authenticator('admin'), mugCategoryRouter);
+app.use('/api/admin/mugs', authenticator('admin'), mugRouter);
+app.use('/api/admin/desktop-calender/category', authenticator('admin'), desktopCalenderCategoryRouter);
+app.use('/api/admin/desktop-calender', authenticator('admin'), desktopCalenderRouter);
+app.use('/api/admin/wall-calender/category', authenticator('admin'), wallCalenderCategoryRouter);
+app.use('/api/admin/wall-calender', authenticator('admin'), wallCalenderRouter);
+app.use('/api/admin/photo-book/category', authenticator('admin'), photoBookCategoryRouter);
+app.use('/api/admin/photo-book', authenticator('admin'), photoBookRouter);
+app.use('/api/admin/mobile-cover/brand', authenticator('admin'), mobileCoverBrandRouter);
+app.use('/api/admin/mobile-cover/model', authenticator('admin'), mobileCoverModelRouter);
+app.use('/api/admin/mobile-cover', authenticator('admin'), mobileCoverRouter);
+app.use('/api/gallary', authenticator(), gallaryRouter);
+app.use('/api/cart/mugs', authenticator(), mugCartRouter);
+
 
 // Page not Found Error
 app.use((req, res) => {
-    res.status(404).json({
-        msg: ['URL not found']
-    });
+    if(res.headersSent) {
+        return;
+    }
+    throw getError(404, 'URL not Found');
 });
 
 // Server Error
@@ -78,6 +113,10 @@ MobileCover.belongsTo(MobileCoverModel);
 Gallary.belongsTo(User);
 Address.hasOne(User, { foreignKey: 'deliveryAddressId' });
 Address.hasOne(User, { foreignKey: 'billingAddressId' });
+
+Cart.belongsTo(User);
+MugCart.belongsTo(Cart);
+MugCart.belongsToMany(Mug, { through: MugCartItem });
 
 // Connecting to Database
 sequelize.sync()

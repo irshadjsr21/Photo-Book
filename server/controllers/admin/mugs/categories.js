@@ -30,6 +30,9 @@ module.exports.postMugCategory = (req, res, next) => {
 
 // Returns Mug Categories
 module.exports.getMugCategory = (req, res, next) => {
+    if(!req.user) {
+        return;
+    }
 
     // Find All Mug Categories
     MugCategory.findAll()

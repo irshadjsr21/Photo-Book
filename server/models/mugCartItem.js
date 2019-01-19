@@ -1,29 +1,25 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
-const Mug = sequelize.define('mug', {
+const MugCartItem = sequelize.define('mugCartItem', {
     id : {
         type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true
     },
-    name : {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    whitePrice : {
-        type: Sequelize.DOUBLE,
-        allowNull: false
-    },
-    blackPrice : {
-        type: Sequelize.DOUBLE,
+    colour : {
+        type: Sequelize.ENUM(['white', 'black']),
         allowNull: false
     },
     imageUrl : {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    quantity: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
     }
 });
 
-module.exports = Mug;
+module.exports = MugCartItem;

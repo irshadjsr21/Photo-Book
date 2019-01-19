@@ -191,3 +191,22 @@ module.exports.mobileCover = [
     .isEmpty()
     .withMessage('Price is Required')
 ];
+
+module.exports.postMugCart = [
+  body('mugId')
+    .not()
+    .isEmpty()
+    .withMessage('Mug Id is Required'),
+  body('colour')
+    .isIn(['white', 'black'])
+    .withMessage('Invalid Colour')
+]
+
+module.exports.putMugCart = [
+  body('colour')
+    .isIn(['white', 'black'])
+    .withMessage('Invalid Colour'),
+  body('quantity')
+    .isInt({ min: 0 })
+    .withMessage('Invalid Quantity')
+]
