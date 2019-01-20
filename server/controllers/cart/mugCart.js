@@ -4,6 +4,7 @@ const Cart = require('../../models/cart');
 const MugCartItem = require('../../models/mugCartItem')
 const { getError, getValidationResult, deleteImage } = require('../../utils/helperFunctions');
 const { mapMugCartItems, mapMugCartItem } = require('../../utils/map');
+const { addMugsThroughId, addMugThroughId , getMugCartId } = require('../../utils/modelHelpers');
 
 module.exports.postMugItem = (req, res, next) => {
 
@@ -52,11 +53,14 @@ module.exports.postMugItem = (req, res, next) => {
             return fetchedCart.addMug(mug, { through: {quantity: userInput.quantity, colour: userInput.colour, imageUrl: userInput.imageUrl} });
         })
         .then(() => {
-            return fetchedCart.getMugs({ where: { id: userInput.mugId }});
+            return MugCartItem.findOne({ where: { mugCartId: fetchedCart.id, mugId: userInput.mugId } })
         })
-        .then(mugs => {
+        .then(mug => {
+            return addMugThroughId(mug);
+        })
+        .then(mug => {
             res.json({
-                mug: mapMugCartItem(mugs[0])
+                mug: mapMugCartItem(mug)
             });
         })
         .catch(error => {
@@ -67,14 +71,19 @@ module.exports.postMugItem = (req, res, next) => {
 
 module.exports.getMugItem = (req, res, next) => {
 
-     Cart.findOne({ where: { userId: req.user.id } })
-        .then(cart => {
-            return MugCart.findOne({ where: { cartId: cart.id } });
-        })
-        .then(mugCart => {
-            return mugCart.getMugs();
+    getMugCartId(req.user.id)
+        .then(mugCartId => {
+            if(!mugCartId) {
+                return res.json({ mugs: [] });
+            }
+            return MugCartItem.findAll({ where: { mugCartId: mugCartId } });
         })
         .then(mugs => {
+            if(res.headersSent) return;
+            return addMugsThroughId(mugs);
+        })
+        .then(mugs => {
+            if(res.headersSent) return;
             res.json({
                 mugs: mapMugCartItems(mugs)
             })
@@ -106,18 +115,12 @@ module.exports.putMugItem = (req, res, next) => {
         throw getError(422, 'Invalid Input', errors);
     }
 
-    Cart.findOne({ where: { userId: req.user.id } })
-        .then(cart => {
-            if(!cart) {
+    getMugCartId(req.user.id)
+        .then(mugCartId => {
+            if(!mugCartId) {
                 throw getError(404, 'No Item Found');
             }
-            return MugCart.findOne({ where: { cartId: cart.id } });
-        })
-        .then(mugCart => {
-            if(!mugCart) {
-                throw getError(404, 'No Item Found');
-            }
-            return MugCartItem.findOne({ where: { mugCartId: mugCart.id, id: id } });
+            return MugCartItem.findOne({ where: { mugCartId: mugCartId, id: id } });
         })
         .then(mug => {
             if(!mug) {
@@ -132,6 +135,9 @@ module.exports.putMugItem = (req, res, next) => {
                 mug[key] = userInput[key];
             }
             return mug.save();
+        })
+        .then(mug => {
+            return addMugThroughId(mug);
         })
         .then(mug => {
             res.json({
@@ -149,18 +155,12 @@ module.exports.putMugItem = (req, res, next) => {
 module.exports.deleteMugCartItem = (req, res, next) => {
     const id = req.params.id;
 
-    Cart.findOne({ where: { userId: req.user.id } })
-        .then(cart => {
-            if(!cart) {
+    getMugCartId(req.user.id)
+        .then(mugCartId => {
+            if(!mugCartId) {
                 throw getError(404, 'No Item Found');
             }
-            return MugCart.findOne({ where: { cartId: cart.id } });
-        })
-        .then(mugCart => {
-            if(!mugCart) {
-                throw getError(404, 'No Item Found');
-            }
-            return MugCartItem.findOne({where: { id: id, mugCartId: mugCart.id }});
+            return MugCartItem.findOne({where: { id: id, mugCartId: mugCartId }});
         })
         .then(mug => {
             if(!mug) {

@@ -11,6 +11,7 @@ module.exports.mapMugCartItem = input => {
         quantity: mug.quantity,
         imageUrl: mug.imageUrl,
         mugId: mug.mugId,
+        mug: mug.mug,
         createdAt: mug.createdAt,
         updatedAt: mug.updatedAt
     }
@@ -22,4 +23,15 @@ module.exports.mapMugCartItems = mugs => {
         result.push(module.exports.mapMugCartItem(mug));
     }
     return result;
+}
+
+module.exports.mapMug = mug => {
+    return {
+        id: mug.id,
+        name: mug.name,
+        whitePrice: mug.whitePrice,
+        blackPrice: mug.blackPrice,
+        imageUrl: mug.imageUrl,
+        mugCategoryId: mug.mugCategoryId
+    }
 }
