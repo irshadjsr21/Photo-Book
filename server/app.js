@@ -29,6 +29,8 @@ const MobileCover = require('./models/mobileCover');
 const Cart = require('./models/cart');
 const MugCartItem = require('./models/mugCartItem');
 const MugCart = require('./models/mugCart');
+const PhotoBookCartItem = require('./models/photoBookCartItem');
+const PhotoBookCart = require('./models/photoBookCart');
 
 // Importing Routers
 const authRouter = require('./routes/auth');
@@ -46,6 +48,8 @@ const mobileCoverModelRouter = require('./routes/admin/mobileCover/model');
 const mobileCoverRouter = require('./routes/admin/mobileCover/product');
 const gallaryRouter = require('./routes/gallary');
 const mugCartRouter = require('./routes/cart/mugCart');
+const photoBookCartRouter = require('./routes/cart/photoBookCart');
+
 
 // Importing Middlewares
 const initialMiddlewares = require('./middlewares/initial');
@@ -78,6 +82,7 @@ app.use('/api/admin/mobile-cover/model', authenticator('admin'), mobileCoverMode
 app.use('/api/admin/mobile-cover', authenticator('admin'), mobileCoverRouter);
 app.use('/api/gallary', authenticator(), gallaryRouter);
 app.use('/api/cart/mugs', authenticator(), mugCartRouter);
+app.use('/api/cart/photo-book', authenticator(), photoBookCartRouter);
 
 
 // Page not Found Error
@@ -116,7 +121,9 @@ Address.hasOne(User, { foreignKey: 'billingAddressId' });
 
 Cart.belongsTo(User);
 MugCart.belongsTo(Cart);
+PhotoBookCart.belongsTo(Cart);
 MugCart.belongsToMany(Mug, { through: MugCartItem });
+PhotoBookCart.belongsToMany(PhotoBook, { through: PhotoBookCartItem });
 
 // Connecting to Database
 sequelize.sync()

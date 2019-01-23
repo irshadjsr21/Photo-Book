@@ -210,3 +210,16 @@ module.exports.putMugCart = [
     .isInt({ min: 0 })
     .withMessage('Invalid Quantity')
 ]
+
+module.exports.postPhotoBookCart = [
+  body('photoBookId')
+    .not()
+    .isEmpty()
+    .withMessage('Photo Book Id is Required')
+]
+
+module.exports.putPhotoBookCart = [
+  body('quantity')
+    .isInt({ min: 0 })
+    .withMessage('Invalid Quantity')
+]

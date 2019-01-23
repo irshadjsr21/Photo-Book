@@ -8,7 +8,7 @@ module.exports = {
   },
   JWT: {
     KEY: "someSecret",
-    EXP: "30m"
+    EXP: "10h"
   },
   ADMIN: {
     NAME: "Irshad Ansari",

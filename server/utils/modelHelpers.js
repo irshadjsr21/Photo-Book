@@ -1,7 +1,9 @@
 const Mug = require('../models/mug');
 const Cart = require('../models/cart');
 const MugCart = require('../models/mugCart');
-const { mapMug } = require('./map');
+const PhotoBook = require('../models/photoBook');
+const PhotoBookCart = require('../models/photoBookCart');
+const { mapMug, mapPhotoBook } = require('./map');
 
 module.exports.addMugThroughId = (item) => {
     return new Promise((resolve, reject) => {
@@ -13,9 +15,9 @@ module.exports.addMugThroughId = (item) => {
         Mug.findByPk(newItem.mugId)
             .then(mug => {
                 if(!mug) {
-                    newItem.mug = {}
+                    newItem.product = {}
                 } else {
-                    newItem.mug = mapMug(mug);
+                    newItem.product = mapMug(mug);
                 }
                 resolve(newItem);
             })
@@ -58,6 +60,69 @@ module.exports.getMugCartId = (userId) => {
                     return resolve(null);
                 }
                 resolve(mugCart.id);
+            })
+            .catch(error => {
+                reject(error);
+            })
+    })
+}
+
+
+module.exports.addPhotoBookThroughId = (item) => {
+    return new Promise((resolve, reject) => {
+        if(!item.photoBookId) {
+            resolve(item);
+        }
+        const newItem = item.dataValues;
+    
+        PhotoBook.findByPk(newItem.photoBookId)
+            .then(photoBook => {
+                if(!photoBook) {
+                    newItem.product = {}
+                } else {
+                    newItem.product = mapPhotoBook(photoBook);
+                }
+                resolve(newItem);
+            })
+            .catch(error => {
+                reject(error);
+            });
+    })
+}
+
+module.exports.addPhotoBooksThroughId = async (items) => {
+    return new Promise(async (resolve, reject) => {
+        if(!items || items.length <= 0) {
+            resolve([]);
+        }
+
+        try {
+            const newItems = [];
+            for(const item of items) {
+                const newItem = await module.exports.addPhotoBookThroughId(item)
+                newItems.push(newItem);
+            }
+            resolve(newItems);
+        } catch(error) {
+            reject(error);
+        }
+    })
+}
+
+module.exports.getPhotoBookCartId = (userId) => {
+    return new Promise((resolve, reject) => {
+        Cart.findOne({ where: { userId: userId } })
+            .then(cart => {
+                if(!cart) {
+                    return resolve(null);
+                }
+                return PhotoBookCart.findOne({ where: { cartId: cart.id } });
+            })
+            .then(photoBookCart => {
+                if(!photoBookCart) {
+                    return resolve(null);
+                }
+                resolve(photoBookCart.id);
             })
             .catch(error => {
                 reject(error);
