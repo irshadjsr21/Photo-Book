@@ -91,107 +91,6 @@ module.exports.address = [
     .isLength({ min: 6, max: 6 })
 ];
 
-module.exports.mugCategory = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.desktopCalenderCategory = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.wallCalenderCategory = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.photoBookCategory = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.mobileCoverBrand = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.mobileCoverModel = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.mug = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('whitePrice')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required'),
-  body('blackPrice')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
-module.exports.desktopCalender = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('price')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
-module.exports.wallCalender = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('price')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
-module.exports.photoBook = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('price')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
-module.exports.mobileCover = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('price')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
 module.exports.postMugCart = [
   body('mugId')
     .not()
@@ -200,7 +99,7 @@ module.exports.postMugCart = [
   body('colour')
     .isIn(['white', 'black'])
     .withMessage('Invalid Colour')
-]
+];
 
 module.exports.putMugCart = [
   body('colour')
@@ -209,17 +108,17 @@ module.exports.putMugCart = [
   body('quantity')
     .isInt({ min: 0 })
     .withMessage('Invalid Quantity')
-]
+];
 
 module.exports.postPhotoBookCart = [
   body('photoBookId')
     .not()
     .isEmpty()
     .withMessage('Photo Book Id is Required')
-]
+];
 
 module.exports.putPhotoBookCart = [
   body('quantity')
     .isInt({ min: 0 })
     .withMessage('Invalid Quantity')
-]
+];

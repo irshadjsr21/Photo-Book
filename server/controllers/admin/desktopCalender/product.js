@@ -1,152 +1,150 @@
 const DesktopCalenderCategory = require('../../../models/desktopCalenderCategory');
 const DesktopCalender = require('../../../models/desktopCalender');
-const { deleteImage, getError, getValidationResult } = require('../../../utils/helperFunctions');
+const {
+  deleteImage,
+  getError,
+  getValidationResult,
+  getUserInput
+} = require('../../../utils/helperFunctions');
+const { mapDesktopCalender, mapAll } = require('../../../utils/adminMap');
 
 // Add DesktopCalender Category
 module.exports.postDesktopCalender = (req, res, next) => {
+  if (!req.file) {
+    throw getError(422, 'Invalid Image');
+  }
 
-    if(!req.file) {
-        throw getError(422, 'Invalid Image');
-    }
+  const properties = [
+    ['name'],
+    ['price'],
+    ['stock'],
+    ['offerPrice'],
+    ['categoryId', 'desktopCalenderCategoryId']
+  ];
 
-    const userInput = {
-        name: req.body.name,
-        price: req.body.price,
-        imageUrl: `/uploads/${req.file.filename}`,
-        desktopCalenderCategoryId: req.body.desktopCalenderCategoryId
-    };
+  const userInput = getUserInput(req, properties, true);
 
-    const errors = getValidationResult(req);
+  const errors = getValidationResult(req);
 
-    if (errors) {
+  if (errors) {
+    deleteImage(userInput.imageUrl);
+    throw getError(422, 'Invalid Input', errors);
+  }
+
+  DesktopCalenderCategory.findByPk(userInput.desktopCalenderCategoryId)
+    .then(category => {
+      if (!category) {
         deleteImage(userInput.imageUrl);
-        throw getError(422, 'Invalid Input', errors);
-    }
+        throw getError(404, 'No Desktop Calender Category Found');
+      }
 
-    DesktopCalenderCategory.findByPk(userInput.desktopCalenderCategoryId)
-        .then(category => {
-            if(!category) {
-                deleteImage(userInput.imageUrl);
-                throw getError(404, 'No DesktopCalender Category Found');
-            }
-            
-            // Crate new DesktopCalender
-            const desktopCalender = new DesktopCalender(userInput);
-        
-            desktopCalender.save()
-                .then(() => {
-                    res.json({
-                        msg : ['DesktopCalender created Successfully']
-                    });
-                })
-                .catch(error => {
-                    next(error);
-                });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+      // Crate new DesktopCalender
+      const desktopCalender = new DesktopCalender(userInput);
+
+      return desktopCalender.save();
+    })
+    .then(desktopCalender => {
+      res.json({
+        desktopCalender: mapDesktopCalender(desktopCalender)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Returns DesktopCalender
 module.exports.getDesktopCalender = (req, res, next) => {
-    
-    const options = {}; 
-    if(req.query.id) {
-        options.id = req.query.id;
-    } else if (req.query.category) {
-        options.desktopCalenderCategoryId = req.query.category;
-    }
+  const options = {};
 
-    // Find All DesktopCalender Categories
-    DesktopCalender.findAll({ where: options })
-        .then(desktopCalenders => {
-            res.json({
-                result: desktopCalenders
-            });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+  if (req.query.id) {
+    options.id = req.query.id;
+  } else if (req.query.category) {
+    options.desktopCalenderCategoryId = req.query.category;
+  }
+
+  // Find All DesktopCalender Categories
+  DesktopCalender.findAll({ where: options })
+    .then(desktopCalenders => {
+      res.json({
+        desktopCalenders: mapAll(desktopCalenders, mapDesktopCalender)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Deletes DesktopCalender
 module.exports.deleteDesktopCalender = (req, res, next) => {
+  const id = req.params.id;
 
-    const id = req.params.id;
+  // Find DesktopCalender
+  DesktopCalender.findByPk(id)
+    .then(desktopCalender => {
+      if (!desktopCalender) {
+        throw getError(404, 'No Desktop Calender Found');
+      }
 
-    // Find DesktopCalender
-    DesktopCalender.findByPk(id)
-        .then(desktopCalender => {
-            if(!desktopCalender) {
-                throw getError(404, 'No DesktopCalender Found');
-            }
-
-            desktopCalender.destroy()
-                .then(() => {
-                    deleteImage(desktopCalender.imageUrl);
-                    res.json({
-                        msg: ['DesktopCalender Deleted Successfully']
-                    });
-                })
-                .catch(error => {
-                    next(error);
-                });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+      return desktopCalender.destroy();
+    })
+    .then(desktopCalender => {
+      deleteImage(desktopCalender.imageUrl);
+      res.json({
+        msg: ['Desktop Calender Deleted Successfully']
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Edit DesktopCalender
 module.exports.putDesktopCalender = (req, res, next) => {
+  const id = req.params.id;
 
-    const id = req.params.id;
+  const properties = [['name'], ['price'], ['stock'], ['offerPrice']];
 
-    const userInput = {
-        name: req.body.name,
-        price: req.body.price
-    };
+  const userInput = getUserInput(req, properties, true);
 
-    if(req.file) {
-        userInput.imageUrl = `/uploads/${req.file.filename}`;
-    }
+  if (Object.keys(userInput).length <= 0) {
+    deleteImage(userInput.imageUrl);
+    throw getError(422, 'No Input');
+  }
 
-    const errors = getValidationResult(req);
+  const errors = getValidationResult(req);
 
-    if (errors) {
-        throw getError(422, 'Invalid Input', errors);
-    }
+  if (errors) {
+    deleteImage(userInput.imageUrl);
+    throw getError(422, 'Invalid Input', errors);
+  }
 
-    // Find DesktopCalender
-    DesktopCalender.findByPk(id)
-        .then(desktopCalender => {
-            if(!desktopCalender) {
-                if(userInput.imageUrl) {
-                    deleteImage(userInput.imageUrl);
-                }
-                throw getError(404, 'No DesktopCalender Found');
-            }
+  // Find DesktopCalender
+  DesktopCalender.findByPk(id)
+    .then(desktopCalender => {
+      if (!desktopCalender) {
+        if (userInput.imageUrl) {
+          deleteImage(userInput.imageUrl);
+        }
+        throw getError(404, 'No Desktop Calender Found');
+      }
 
-            if(userInput.imageUrl) {
-                deleteImage(desktopCalender.imageUrl);
-            }
+      if (userInput.imageUrl) {
+        deleteImage(desktopCalender.imageUrl);
+      }
 
-            for(const key in userInput) {
-                desktopCalender[key] = userInput[key];
-            }
-            
-            desktopCalender.save()
-                .then(() => {
-                    res.json({
-                        msg: ['DesktopCalender Edited Successfully']
-                    });
-                })
-                .catch(error => {
-                    next(error);
-                });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+      for (const key in userInput) {
+        desktopCalender[key] = userInput[key];
+      }
+
+      return desktopCalender.save();
+    })
+    .then(desktopCalender => {
+      res.json({
+        desktopCalender: mapDesktopCalender(desktopCalender)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};

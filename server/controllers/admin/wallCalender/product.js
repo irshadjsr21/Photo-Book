@@ -1,150 +1,147 @@
 const WallCalenderCategory = require('../../../models/wallCalenderCategory');
 const WallCalender = require('../../../models/wallCalender');
-const { deleteImage, getError, getValidationResult } = require('../../../utils/helperFunctions');
+const {
+  deleteImage,
+  getError,
+  getValidationResult,
+  getUserInput
+} = require('../../../utils/helperFunctions');
+const { mapWallCalender, mapAll } = require('../../../utils/adminMap');
 
 // Add WallCalender Category
 module.exports.postWallCalender = (req, res, next) => {
+  if (!req.file) {
+    throw getError(422, 'Invalid Image');
+  }
 
-    if(!req.file) {
-        throw getError(422, 'Invalid Image');
-    }
+  const properties = [
+    ['name'],
+    ['price'],
+    ['stock'],
+    ['offerPrice'],
+    ['categoryId', 'wallCalenderCategoryId']
+  ];
 
-    const userInput = {
-        name: req.body.name,
-        price: req.body.price,
-        imageUrl: `/uploads/${req.file.filename}`,
-        wallCalenderCategoryId: req.body.wallCalenderCategoryId
-    };
+  const userInput = getUserInput(req, properties, true);
 
-    const errors = getValidationResult(req);
+  const errors = getValidationResult(req);
 
-    if (errors) {
+  if (errors) {
+    deleteImage(userInput.imageUrl);
+    throw getError(422, 'Invalid Input', errors);
+  }
+
+  WallCalenderCategory.findByPk(userInput.wallCalenderCategoryId)
+    .then(category => {
+      if (!category) {
         deleteImage(userInput.imageUrl);
-        throw getError(422, 'Invalid Input', errors);
-    }
+        throw getError(404, 'No Wall Calender Category Found');
+      }
 
-    WallCalenderCategory.findByPk(userInput.wallCalenderCategoryId)
-        .then(category => {
-            if(!category) {
-                deleteImage(userInput.imageUrl);
-                throw getError(404, 'No Wall Calender Category Found');
-            }
-            
-            // Crate new WallCalender
-            const wallCalender = new WallCalender(userInput);
-        
-            wallCalender.save()
-                .then(() => {
-                    res.json({
-                        msg : ['WallCalender created Successfully']
-                    });
-                })
-                .catch(error => {
-                    next(error);
-                });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+      // Crate new WallCalender
+      const wallCalender = new WallCalender(userInput);
+
+      return wallCalender.save();
+    })
+    .then(wallCalender => {
+      res.json({
+        wallCalender: mapWallCalender(wallCalender)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Returns WallCalender
 module.exports.getWallCalender = (req, res, next) => {
-    
-    const options = {}; 
-    if(req.query.id) {
-        options.id = req.query.id;
-    } else if (req.query.category) {
-        options.wallCalenderCategoryId = req.query.category;
-    }
+  const options = {};
+  if (req.query.id) {
+    options.id = req.query.id;
+  } else if (req.query.category) {
+    options.wallCalenderCategoryId = req.query.category;
+  }
 
-    // Find All WallCalender Categories
-    WallCalender.findAll({ where: options })
-        .then(wallCalenders => {
-            res.json({
-                result: wallCalenders
-            });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+  // Find All WallCalender Categories
+  WallCalender.findAll({ where: options })
+    .then(wallCalenders => {
+      res.json({
+        wallCalenders: mapAll(wallCalenders, mapWallCalender)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Deletes WallCalender
 module.exports.deleteWallCalender = (req, res, next) => {
+  const id = req.params.id;
 
-    const id = req.params.id;
+  // Find WallCalender
+  WallCalender.findByPk(id)
+    .then(wallCalender => {
+      if (!wallCalender) {
+        throw getError(404, 'No Wall Calender Found');
+      }
 
-    // Find WallCalender
-    WallCalender.findByPk(id)
-        .then(wallCalender => {
-            if(!wallCalender) {
-                throw getError(404, 'No Wall Calender Found');
-            }
-
-            wallCalender.destroy()
-                .then(() => {
-                    deleteImage(wallCalender.imageUrl);
-                    res.json({
-                        msg: ['WallCalender Deleted Successfully']
-                    });
-                })
-                .catch(error => {
-                    next(error);
-                });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+      return wallCalender.destroy();
+    })
+    .then(wallCalender => {
+      deleteImage(wallCalender.imageUrl);
+      res.json({
+        msg: ['WallCalender Deleted Successfully']
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Edit WallCalender
 module.exports.putWallCalender = (req, res, next) => {
-    
-    const id = req.params.id;
+  const id = req.params.id;
 
-    const userInput = {
-        name: req.body.name,
-        price: req.body.price
-    };
+  const properties = [['name'], ['price'], ['stock'], ['offerPrice']];
 
-    if(req.file) {
-        userInput.imageUrl = `/uploads/${req.file.filename}`;
-    }
+  const userInput = getUserInput(req, properties, true);
 
-    const errors = getValidationResult(req);
+  if (Object.keys(userInput).length <= 0) {
+    deleteImage(userInput.imageUrl);
+    throw getError(422, 'No Input');
+  }
 
-    if (errors) {
-        throw getError(422, 'Invalid Input', errors);
-    }
+  const errors = getValidationResult(req);
 
-    // Find WallCalender
-    WallCalender.findByPk(id)
-        .then(wallCalender => {
-            if(!wallCalender) {
-                if(userInput.imageUrl) {
-                    deleteImage(userInput.imageUrl);
-                }
-                throw getError(404, 'No Wall Calender Found');
-            }
+  if (errors) {
+    deleteImage(userInput.imageUrl);
+    throw getError(422, 'Invalid Input', errors);
+  }
 
-            deleteImage(wallCalender.imageUrl);
+  // Find WallCalender
+  WallCalender.findByPk(id)
+    .then(wallCalender => {
+      if (!wallCalender) {
+        if (userInput.imageUrl) {
+          deleteImage(userInput.imageUrl);
+        }
+        throw getError(404, 'No Wall Calender Found');
+      }
 
-            for(const key in userInput) {
-                wallCalender[key] = userInput[key];
-            }
-            
-            wallCalender.save()
-                .then(() => {
-                    res.json({
-                        msg: ['WallCalender Edited Successfully']
-                    });
-                })
-                .catch(error => {
-                    next(error);
-                });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+      deleteImage(wallCalender.imageUrl);
+
+      for (const key in userInput) {
+        wallCalender[key] = userInput[key];
+      }
+
+      return wallCalender.save();
+    })
+    .then(wallCalender => {
+      res.json({
+        wallCalender: mapWallCalender(wallCalender)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
