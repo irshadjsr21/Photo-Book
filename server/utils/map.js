@@ -18,77 +18,86 @@ module.exports.mapAll = (items, mapFunction) => {
   return result;
 };
 
+// ***************************************
+// ************ Products *****************
+// ***************************************
+
+// **************** Mug *******************
+module.exports.mapMug = mug => {
+  const properties = [
+    ['id'],
+    ['name'],
+    ['whitePrice'],
+    ['blackPrice'],
+    ['stock'],
+    ['whiteOfferPrice'],
+    ['blackOfferPrice'],
+    ['imageUrl'],
+    ['mugCategoryId', 'categoryId']
+  ];
+
+  return module.exports.map(mug, properties);
+};
+
+// ************** Photo Book *****************
+module.exports.mapPhotoBook = photoBook => {
+  const properties = [
+    ['id'],
+    ['name'],
+    ['price'],
+    ['stock'],
+    ['offerPrice'],
+    ['imageUrl'],
+    ['photoBookCategoryId', 'categoryId']
+  ];
+
+  return module.exports.map(photoBook, properties);
+};
+
+// ***************************************
+// ************ Cart Items ***************
+// ***************************************
+
+// **************** Mug *******************
 module.exports.mapMugCartItem = input => {
   let mug;
+  const properties = [
+    ['id'],
+    ['colour'],
+    ['quantity'],
+    ['product'],
+    ['imageUrl'],
+    ['createdAt'],
+    ['updatedAt'],
+    ['mugId']
+  ];
+
   if (input.mugCartItem) {
     mug = input.mugCartItem;
   } else {
     mug = input;
   }
-  return {
-    id: mug.id,
-    colour: mug.colour,
-    quantity: mug.quantity,
-    imageUrl: mug.imageUrl,
-    mugId: mug.mugId,
-    product: mug.product,
-    createdAt: mug.createdAt,
-    updatedAt: mug.updatedAt
-  };
+
+  return module.exports.map(mug, properties);
 };
 
-module.exports.mapMugCartItems = mugs => {
-  const result = [];
-  for (const mug of mugs) {
-    result.push(module.exports.mapMugCartItem(mug));
-  }
-  return result;
-};
-
-module.exports.mapMug = mug => {
-  return {
-    id: mug.id,
-    name: mug.name,
-    whitePrice: mug.whitePrice,
-    blackPrice: mug.blackPrice,
-    imageUrl: mug.imageUrl,
-    mugCategoryId: mug.mugCategoryId
-  };
-};
-
+// *************** Photo Book ******************
 module.exports.mapPhotoBookCartItem = input => {
   let photoBook;
+  const properties = [
+    ['id'],
+    ['quantity'],
+    ['product'],
+    ['imageUrl'],
+    ['createdAt'],
+    ['updatedAt'],
+    ['photoBookId']
+  ];
+
   if (input.photoBookCartItem) {
     photoBook = input.photoBookCartItem;
   } else {
     photoBook = input;
   }
-  return {
-    id: photoBook.id,
-    quantity: photoBook.quantity,
-    imageUrl: photoBook.imageUrl,
-    photoBookId: photoBook.photoBookId,
-    product: photoBook.product,
-    createdAt: photoBook.createdAt,
-    updatedAt: photoBook.updatedAt
-  };
-};
-
-module.exports.mapPhotoBookCartItems = photoBooks => {
-  const result = [];
-  for (const photoBook of photoBooks) {
-    result.push(module.exports.mapPhotoBookCartItem(photoBook));
-  }
-  return result;
-};
-
-module.exports.mapPhotoBook = photoBook => {
-  return {
-    id: photoBook.id,
-    name: photoBook.name,
-    whitePrice: photoBook.whitePrice,
-    blackPrice: photoBook.blackPrice,
-    imageUrl: photoBook.imageUrl,
-    photoBookCategoryId: photoBook.photoBookCategoryId
-  };
+  return module.exports.map(input, properties);
 };

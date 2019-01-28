@@ -45,17 +45,6 @@ module.exports.userProfile = [
     .isLength({ min: 10, max: 10 })
 ];
 
-module.exports.adminProfile = [
-  body('fullName')
-    .not()
-    .isEmpty()
-    .withMessage('Full Name is Required'),
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Invalid Email')
-];
-
 module.exports.changePassword = [
   body('newPassword')
     .isLength({ min: 5 })
@@ -91,6 +80,10 @@ module.exports.address = [
     .isLength({ min: 6, max: 6 })
 ];
 
+// ******************************
+// ********** Carts *************
+// ******************************
+
 module.exports.postMugCart = [
   body('mugId')
     .not()
@@ -103,9 +96,11 @@ module.exports.postMugCart = [
 
 module.exports.putMugCart = [
   body('colour')
+    .optional()
     .isIn(['white', 'black'])
     .withMessage('Invalid Colour'),
   body('quantity')
+    .optional()
     .isInt({ min: 0 })
     .withMessage('Invalid Quantity')
 ];

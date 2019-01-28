@@ -1,5 +1,16 @@
 const { body } = require('express-validator/check');
 
+module.exports.userLogin = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Invalid Email'),
+  body('password')
+    .not()
+    .isEmpty()
+    .withMessage('Password is Required')
+];
+
 module.exports.adminProfile = [
   body('fullName')
     .not()
