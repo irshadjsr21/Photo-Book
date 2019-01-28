@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../utils/database');
 
-const Mug = sequelize.define('mug', {
+const DesktopCalendar = sequelize.define('desktopCalendar', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     allowNull: false,
@@ -12,11 +12,7 @@ const Mug = sequelize.define('mug', {
     type: Sequelize.STRING,
     allowNull: false
   },
-  whitePrice: {
-    type: Sequelize.DOUBLE,
-    allowNull: false
-  },
-  blackPrice: {
+  price: {
     type: Sequelize.DOUBLE,
     allowNull: false
   },
@@ -24,11 +20,7 @@ const Mug = sequelize.define('mug', {
     type: Sequelize.INTEGER.UNSIGNED,
     allowNull: false
   },
-  whiteOfferPrice: {
-    type: Sequelize.DOUBLE,
-    allowNull: true
-  },
-  blackOfferPrice: {
+  offerPrice: {
     type: Sequelize.DOUBLE,
     allowNull: true
   },
@@ -38,4 +30,4 @@ const Mug = sequelize.define('mug', {
   }
 });
 
-module.exports = Mug;
+module.exports = DesktopCalendar;

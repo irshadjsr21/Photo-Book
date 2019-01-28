@@ -16,6 +16,14 @@ const MobileCover = sequelize.define('mobileCover', {
         type: Sequelize.DOUBLE,
         allowNull: false
     },
+    stock: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false
+    },
+    offerPrice: {
+        type: Sequelize.DOUBLE,
+        allowNull: true
+    },
     imageUrl : {
         type: Sequelize.STRING,
         allowNull: false

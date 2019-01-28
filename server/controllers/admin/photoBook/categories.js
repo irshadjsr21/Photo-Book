@@ -1,105 +1,107 @@
 const PhotoBookCategory = require('../../../models/photoBookCategory');
-const { getError, getValidationResult } = require('../../../utils/helperFunctions');
+const {
+  getError,
+  getValidationResult,
+  getUserInput
+} = require('../../../utils/helperFunctions');
+const { mapPhotoBookCategory, mapAll } = require('../../../utils/adminMap');
 
 // Add Photo Book Category
 module.exports.postPhotoBookCategory = (req, res, next) => {
-    
-    const userInput = {
-        name: req.body.name
-    };
+  const properties = [['name']];
 
-    const errors = getValidationResult(req);
+  const userInput = getUserInput(req, properties);
 
-    if (errors) {
-        throw getError(422, 'Invalid Input', errors);
-    }
+  const errors = getValidationResult(req);
 
-    // Crate new Photo Book Category
-    const photoBookCategory = new PhotoBookCategory(userInput);
+  if (errors) {
+    throw getError(422, 'Invalid Input', errors);
+  }
 
-    photoBookCategory.save()
-        .then(() => {
-            res.json({
-                msg : ['Photo Book Category created Successfully']
-            });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+  // Crate new Photo Book Category
+  const photoBookCategory = new PhotoBookCategory(userInput);
+
+  photoBookCategory
+    .save()
+    .then(() => {
+      res.json({
+        category: mapPhotoBookCategory(photoBookCategory)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Returns Photo Book Categories
 module.exports.getPhotoBookCategory = (req, res, next) => {
-
-    // Find All Photo Book Categories
-    PhotoBookCategory.findAll()
-        .then(category => {
-            res.json({
-                result: category
-            });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+  // Find All Photo Book Categories
+  PhotoBookCategory.findAll()
+    .then(categories => {
+      res.json({
+        categories: mapAll(categories, mapPhotoBookCategory)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Deletes Photo Book Category
 module.exports.deletePhotoBookCategory = (req, res, next) => {
+  const id = req.params.id;
 
-    const id = req.params.id;
+  // Find Photo Book Category
+  PhotoBookCategory.findByPk(id)
+    .then(photoBook => {
+      if (!photoBook) {
+        throw getError(404, 'No Photo Book Category Found');
+      }
 
-    // Find Photo Book Category
-    PhotoBookCategory.findByPk(id)
-        .then(photoBook => {
-            if(!photoBook) {
-                throw getError(404, 'No Photo Book Category Found');
-            }
-
-            photoBook.destroy()
-                .then(() => {
-                    res.json({
-                        msg: ['Photo Book Category Deleted Successfully']
-                    });
-                })
-                .catch(error => {
-                    next(error);
-                });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+      return photoBook.destroy();
+    })
+    .then(() => {
+      res.json({
+        msg: ['Photo Book Category Deleted Successfully']
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};
 
 // Edit Photo Book Category
 module.exports.putPhotoBookCategory = (req, res, next) => {
-    
-    const id = req.params.id;
+  const id = req.params.id;
 
-    const errors = getValidationResult(req);
+  const properties = [['name']];
 
-    if (errors) {
-        throw getError(422, 'Invalid Input', errors);
-    }
+  const userInput = getUserInput(req, properties);
 
-    // Find Photo Book Category
-    PhotoBookCategory.findByPk(id)
-        .then(photoBook => {
-            if(!photoBook) {
-                throw getError(404, 'No Photo Book Category Found');
-            }
+  const errors = getValidationResult(req);
 
-            photoBook.name = req.body.name;
-            photoBook.save()
-                .then(() => {
-                    res.json({
-                        msg: ['Photo Book Category Edited Successfully']
-                    });
-                })
-                .catch(error => {
-                    next(error);
-                });
-        })
-        .catch(error => {
-            next(error);
-        });
-}
+  if (errors) {
+    throw getError(422, 'Invalid Input', errors);
+  }
+
+  // Find Photo Book Category
+  PhotoBookCategory.findByPk(id)
+    .then(category => {
+      if (!category) {
+        throw getError(404, 'No Photo Book Category Found');
+      }
+
+      for (const key in userInput) {
+        category[key] = userInput[key];
+      }
+      return category.save();
+    })
+    .then(category => {
+      res.json({
+        category: mapPhotoBookCategory(category)
+      });
+    })
+    .catch(error => {
+      next(error);
+    });
+};

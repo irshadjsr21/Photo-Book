@@ -1,5 +1,9 @@
 const { body } = require('express-validator/check');
 
+// ******************************
+// ********** User *************
+// ******************************
+
 module.exports.userSignUp = [
   body('fullName')
     .not()
@@ -45,17 +49,6 @@ module.exports.userProfile = [
     .isLength({ min: 10, max: 10 })
 ];
 
-module.exports.adminProfile = [
-  body('fullName')
-    .not()
-    .isEmpty()
-    .withMessage('Full Name is Required'),
-  body('email')
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Invalid Email')
-];
-
 module.exports.changePassword = [
   body('newPassword')
     .isLength({ min: 5 })
@@ -91,103 +84,49 @@ module.exports.address = [
     .isLength({ min: 6, max: 6 })
 ];
 
-module.exports.mugCategory = [
-  body('name')
+// ******************************
+// ********** Carts *************
+// ******************************
+
+module.exports.postMugCart = [
+  body('productId')
     .not()
     .isEmpty()
-    .withMessage('Name is Required')
+    .withMessage('Product Id is Required'),
+  body('colour')
+    .isIn(['white', 'black'])
+    .withMessage('Invalid Colour'),
+  body('quantity')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Invalid Quantity')
 ];
 
-module.exports.desktopCalenderCategory = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
+module.exports.putMugCart = [
+  body('colour')
+    .optional()
+    .isIn(['white', 'black'])
+    .withMessage('Invalid Colour'),
+  body('quantity')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Invalid Quantity')
 ];
 
-module.exports.wallCalenderCategory = [
-  body('name')
+module.exports.postPhotoBookCart = [
+  body('productId')
     .not()
     .isEmpty()
-    .withMessage('Name is Required')
+    .withMessage('Product Id is Required'),
+  body('quantity')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Invalid Quantity')
 ];
 
-module.exports.photoBookCategory = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.mobileCoverBrand = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.mobileCoverModel = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required')
-];
-
-module.exports.mug = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('whitePrice')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required'),
-  body('blackPrice')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
-module.exports.desktopCalender = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('price')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
-module.exports.wallCalender = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('price')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
-module.exports.photoBook = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('price')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
-];
-
-module.exports.mobileCover = [
-  body('name')
-    .not()
-    .isEmpty()
-    .withMessage('Name is Required'),
-  body('price')
-    .not()
-    .isEmpty()
-    .withMessage('Price is Required')
+module.exports.putPhotoBookCart = [
+  body('quantity')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Invalid Quantity')
 ];
