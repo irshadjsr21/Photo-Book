@@ -13,9 +13,9 @@ const {
 const { mapMugCartItem, mapMug, mapAll } = require('../../utils/map');
 
 const {
-  getMugCartId,
   addModelThroughId,
-  addAllModelThroughId
+  addAllModelThroughId,
+  getProductCartId
 } = require('../../utils/modelHelpers');
 
 // Add Mug to Cart
@@ -24,7 +24,7 @@ module.exports.postMugItem = (req, res, next) => {
     throw getError(422, 'Invalid Image');
   }
 
-  const mugId = req.body.mugId;
+  const mugId = req.body.productId;
 
   const properties = [['colour'], ['quantity']];
   const userInput = getUserInput(req, properties, true);
@@ -99,7 +99,7 @@ module.exports.postMugItem = (req, res, next) => {
 
 // Get Mug Cart Items
 module.exports.getMugItem = (req, res, next) => {
-  getMugCartId(req.user.id)
+  getProductCartId(MugCart, req.user.id)
     .then(mugCartId => {
       if (!mugCartId) {
         return res.json({ mugs: [] });
@@ -145,7 +145,7 @@ module.exports.putMugItem = (req, res, next) => {
     throw getError(422, 'Invalid Input', errors);
   }
 
-  getMugCartId(req.user.id)
+  getProductCartId(MugCart, req.user.id)
     .then(mugCartId => {
       if (!mugCartId) {
         deleteImage(userInput.imageUrl);
@@ -189,7 +189,7 @@ module.exports.putMugItem = (req, res, next) => {
 module.exports.deleteMugCartItem = (req, res, next) => {
   const id = req.params.id;
 
-  getMugCartId(req.user.id)
+  getProductCartId(MugCart, req.user.id)
     .then(mugCartId => {
       if (!mugCartId) {
         throw getError(404, 'No Item Found');

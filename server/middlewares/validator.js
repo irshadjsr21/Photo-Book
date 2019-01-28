@@ -1,5 +1,9 @@
 const { body } = require('express-validator/check');
 
+// ******************************
+// ********** User *************
+// ******************************
+
 module.exports.userSignUp = [
   body('fullName')
     .not()
@@ -85,13 +89,17 @@ module.exports.address = [
 // ******************************
 
 module.exports.postMugCart = [
-  body('mugId')
+  body('productId')
     .not()
     .isEmpty()
-    .withMessage('Mug Id is Required'),
+    .withMessage('Product Id is Required'),
   body('colour')
     .isIn(['white', 'black'])
-    .withMessage('Invalid Colour')
+    .withMessage('Invalid Colour'),
+  body('quantity')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Invalid Quantity')
 ];
 
 module.exports.putMugCart = [
@@ -106,14 +114,19 @@ module.exports.putMugCart = [
 ];
 
 module.exports.postPhotoBookCart = [
-  body('photoBookId')
+  body('productId')
     .not()
     .isEmpty()
-    .withMessage('Photo Book Id is Required')
+    .withMessage('Product Id is Required'),
+  body('quantity')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Invalid Quantity')
 ];
 
 module.exports.putPhotoBookCart = [
   body('quantity')
+    .optional()
     .isInt({ min: 0 })
     .withMessage('Invalid Quantity')
 ];
