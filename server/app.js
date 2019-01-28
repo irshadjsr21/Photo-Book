@@ -102,6 +102,8 @@ const photoBookCartRouter = require('./routes/cart/photoBookCart');
 const mugRouter = require('./routes/products/mug');
 const photoBookRouter = require('./routes/products/photoBook');
 const desktopCalendarRouter = require('./routes/products/desktopCalendar');
+const wallCalendarRouter = require('./routes/products/wallCalendar');
+const mobileCoverRouter = require('./routes/products/mobileCover');
 
 // *
 // *
@@ -211,6 +213,8 @@ app.use(
   authenticator(),
   desktopCalendarRouter
 );
+app.use('/api/products/wall-calendar', authenticator(), wallCalendarRouter);
+app.use('/api/products/mobile-cover', authenticator(), mobileCoverRouter);
 
 // Page not Found Error
 app.use((req, res) => {

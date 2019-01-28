@@ -60,6 +60,12 @@ module.exports.mapPhotoBook = photoBook => {
   return module.exports.map(photoBook, properties);
 };
 
+module.exports.mapPhotoBookCategory = category => {
+  const properties = [['id'], ['name']];
+
+  return module.exports.map(category, properties);
+};
+
 // ************** Desktop Calendar *****************
 module.exports.mapDesktopCalendar = desktopCalendar => {
   const properties = [
@@ -79,6 +85,54 @@ module.exports.mapDesktopCalendarCategory = category => {
   const properties = [['id'], ['name']];
 
   return module.exports.map(category, properties);
+};
+
+// ************** Wall Calendar *****************
+module.exports.mapWallCalendar = wallCalendar => {
+  const properties = [
+    ['id'],
+    ['name'],
+    ['price'],
+    ['stock'],
+    ['offerPrice'],
+    ['imageUrl'],
+    ['wallCalendarCategoryId', 'categoryId']
+  ];
+
+  return module.exports.map(wallCalendar, properties);
+};
+
+module.exports.mapWallCalendarCategory = category => {
+  const properties = [['id'], ['name']];
+
+  return module.exports.map(category, properties);
+};
+
+// ************** Mobile Cover *****************
+module.exports.mapMobileCover = mobileCover => {
+  const properties = [
+    ['id'],
+    ['name'],
+    ['price'],
+    ['stock'],
+    ['offerPrice'],
+    ['imageUrl'],
+    ['mobileCoverModelId', 'modelId']
+  ];
+
+  return module.exports.map(mobileCover, properties);
+};
+
+module.exports.mapMobileCoverBrand = brand => {
+  const properties = [['id'], ['name']];
+
+  return module.exports.map(brand, properties);
+};
+
+module.exports.mapMobileCoverModel = model => {
+  const properties = [['id'], ['name'], ['mobileCoverBrandId', 'brandId']];
+
+  return module.exports.map(model, properties);
 };
 
 // ***************************************

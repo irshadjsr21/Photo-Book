@@ -8,7 +8,7 @@ const {
   mapAll
 } = require('../../utils/map');
 
-// Get Photo Book Category
+// Get Desktop Calendar Category
 module.exports.getDesktopCalendarCategory = (req, res, next) => {
   const properties = [['id']];
 
@@ -25,7 +25,7 @@ module.exports.getDesktopCalendarCategory = (req, res, next) => {
     });
 };
 
-// Get Photo Book
+// Get Desktop Calendar
 module.exports.getDesktopCalendar = (req, res, next) => {
   const properties = [['id'], ['category', 'desktopCalendarCategoryId']];
 
