@@ -32,24 +32,6 @@ const MugCart = require('./models/mugCart');
 const PhotoBookCartItem = require('./models/photoBookCartItem');
 const PhotoBookCart = require('./models/photoBookCart');
 
-// Importing Routers
-const authRouter = require('./routes/auth');
-const adminAuthRouter = require('./routes/admin/auth');
-const mugCategoryRouter = require('./routes/admin/mugs/categories');
-const mugRouter = require('./routes/admin/mugs/product');
-const desktopCalenderCategoryRouter = require('./routes/admin/desktopCalender/categories');
-const desktopCalenderRouter = require('./routes/admin/desktopCalender/product');
-const wallCalenderCategoryRouter = require('./routes/admin/wallCalender/categories');
-const wallCalenderRouter = require('./routes/admin/wallCalender/product');
-const photoBookCategoryRouter = require('./routes/admin/photoBook/categories');
-const photoBookRouter = require('./routes/admin/photoBook/product');
-const mobileCoverBrandRouter = require('./routes/admin/mobileCover/brand');
-const mobileCoverModelRouter = require('./routes/admin/mobileCover/model');
-const mobileCoverRouter = require('./routes/admin/mobileCover/product');
-const gallaryRouter = require('./routes/gallary');
-const mugCartRouter = require('./routes/cart/mugCart');
-const photoBookCartRouter = require('./routes/cart/photoBookCart');
-
 // Importing Middlewares
 const initialMiddlewares = require('./middlewares/initial');
 
@@ -65,47 +47,170 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Setting Middlewares
 app.use(initialMiddlewares);
 
-// Setting up Routes
-app.use('/api', authRouter);
+// *
+// *
+// *
+
+// **********************************************
+// ********** Importing Admin Routes ************
+// **********************************************
+
+// *
+// *
+// *
+
+// **************** General *********************
+const adminAuthRouter = require('./routes/admin/auth');
+
+// ******************* Products ***********************
+const adminMugCategoryRouter = require('./routes/admin/mugs/categories');
+const adminMugRouter = require('./routes/admin/mugs/product');
+
+const adminDesktopCalenderCategoryRouter = require('./routes/admin/desktopCalender/categories');
+const adminDesktopCalenderRouter = require('./routes/admin/desktopCalender/product');
+
+const adminWallCalenderCategoryRouter = require('./routes/admin/wallCalender/categories');
+const adminWallCalenderRouter = require('./routes/admin/wallCalender/product');
+
+const adminPhotoBookCategoryRouter = require('./routes/admin/photoBook/categories');
+const adminPhotoBookRouter = require('./routes/admin/photoBook/product');
+
+const adminMobileCoverBrandRouter = require('./routes/admin/mobileCover/brand');
+const adminMobileCoverModelRouter = require('./routes/admin/mobileCover/model');
+const adminMobileCoverRouter = require('./routes/admin/mobileCover/product');
+
+// *
+// *
+// *
+
+// **********************************************
+// ********** Importing User Routes *************
+// **********************************************
+
+// *
+// *
+// *
+
+const authRouter = require('./routes/auth');
+const gallaryRouter = require('./routes/gallary');
+
+// ***************** Cart ************************
+const mugCartRouter = require('./routes/cart/mugCart');
+const photoBookCartRouter = require('./routes/cart/photoBookCart');
+
+// ***************** Products ************************
+const mugRouter = require('./routes/products/mug');
+const photoBookRouter = require('./routes/products/photoBook');
+const desktopCalenderRouter = require('./routes/products/desktopCalender');
+
+// *
+// *
+// *
+
+// **********************************************
+// ******** Setting Up Admin Routers ************
+// **********************************************
+
+// *
+// *
+// *
+
+// *************** General **********************
 app.use('/api/admin', adminAuthRouter);
-app.use('/api/admin/mug/category', authenticator('admin'), mugCategoryRouter);
-app.use('/api/admin/mug', authenticator('admin'), mugRouter);
+
+// *************** Products *********************
+
+// Mug
+app.use(
+  '/api/admin/mug/category',
+  authenticator('admin'),
+  adminMugCategoryRouter
+);
+
+app.use('/api/admin/mug', authenticator('admin'), adminMugRouter);
+
+// Desktop Calender
 app.use(
   '/api/admin/desktop-calender/category',
   authenticator('admin'),
-  desktopCalenderCategoryRouter
+  adminDesktopCalenderCategoryRouter
 );
+
 app.use(
   '/api/admin/desktop-calender',
   authenticator('admin'),
-  desktopCalenderRouter
+  adminDesktopCalenderRouter
 );
+
+// Wall Calender
 app.use(
   '/api/admin/wall-calender/category',
   authenticator('admin'),
-  wallCalenderCategoryRouter
+  adminWallCalenderCategoryRouter
 );
-app.use('/api/admin/wall-calender', authenticator('admin'), wallCalenderRouter);
+
+app.use(
+  '/api/admin/wall-calender',
+  authenticator('admin'),
+  adminWallCalenderRouter
+);
+
+// Photo Book
 app.use(
   '/api/admin/photo-book/category',
   authenticator('admin'),
-  photoBookCategoryRouter
+  adminPhotoBookCategoryRouter
 );
-app.use('/api/admin/photo-book', authenticator('admin'), photoBookRouter);
+
+app.use('/api/admin/photo-book', authenticator('admin'), adminPhotoBookRouter);
+
+// Mobile Cover
 app.use(
   '/api/admin/mobile-cover/brand',
   authenticator('admin'),
-  mobileCoverBrandRouter
+  adminMobileCoverBrandRouter
 );
+
 app.use(
   '/api/admin/mobile-cover/model',
   authenticator('admin'),
-  mobileCoverModelRouter
+  adminMobileCoverModelRouter
 );
-app.use('/api/admin/mobile-cover', authenticator('admin'), mobileCoverRouter);
+
+app.use(
+  '/api/admin/mobile-cover',
+  authenticator('admin'),
+  adminMobileCoverRouter
+);
+
+// *
+// *
+// *
+
+// **********************************************
+// ******** Setting Up User Routers *************
+// **********************************************
+
+// *
+// *
+// *
+
+// ***************** General ********************
+app.use('/api', authRouter);
 app.use('/api/gallary', authenticator(), gallaryRouter);
+
+// ***************** Cart ***********************
 app.use('/api/cart/mug', authenticator(), mugCartRouter);
 app.use('/api/cart/photo-book', authenticator(), photoBookCartRouter);
+
+// ***************** Products *******************
+app.use('/api/products/mug', authenticator(), mugRouter);
+app.use('/api/products/photo-book', authenticator(), photoBookRouter);
+app.use(
+  '/api/products/desktop-calender',
+  authenticator(),
+  desktopCalenderRouter
+);
 
 // Page not Found Error
 app.use((req, res) => {

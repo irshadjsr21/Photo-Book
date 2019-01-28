@@ -94,3 +94,16 @@ module.exports.getUserInput = (req, properties, doAddImage) => {
 
   return userInput;
 };
+
+module.exports.getQuery = (req, properties) => {
+  const options = {};
+
+  for (const property of properties) {
+    if (req.query[property[0]]) {
+      let key = property[1] || property[0];
+      options[key] = req.query[property[0]];
+    }
+  }
+
+  return options;
+};

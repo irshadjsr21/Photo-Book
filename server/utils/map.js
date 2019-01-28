@@ -39,6 +39,12 @@ module.exports.mapMug = mug => {
   return module.exports.map(mug, properties);
 };
 
+module.exports.mapMugCategory = category => {
+  const properties = [['id'], ['name']];
+
+  return module.exports.map(category, properties);
+};
+
 // ************** Photo Book *****************
 module.exports.mapPhotoBook = photoBook => {
   const properties = [
@@ -52,6 +58,27 @@ module.exports.mapPhotoBook = photoBook => {
   ];
 
   return module.exports.map(photoBook, properties);
+};
+
+// ************** Desktop Calender *****************
+module.exports.mapDesktopCalender = desktopCalender => {
+  const properties = [
+    ['id'],
+    ['name'],
+    ['price'],
+    ['stock'],
+    ['offerPrice'],
+    ['imageUrl'],
+    ['desktopCalenderCategoryId', 'categoryId']
+  ];
+
+  return module.exports.map(desktopCalender, properties);
+};
+
+module.exports.mapDesktopCalenderCategory = category => {
+  const properties = [['id'], ['name']];
+
+  return module.exports.map(category, properties);
 };
 
 // ***************************************
