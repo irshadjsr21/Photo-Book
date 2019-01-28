@@ -1,13 +1,13 @@
 const { map, mapAll } = require('./map');
 
-// ********* Desktop Calender **************
-module.exports.mapDesktopCalenderCategory = category => {
+// ********* Desktop Calendar **************
+module.exports.mapDesktopCalendarCategory = category => {
   const properties = [['id'], ['name'], ['createdAt'], ['updatedAt']];
 
   return map(category, properties);
 };
 
-module.exports.mapDesktopCalender = calender => {
+module.exports.mapDesktopCalendar = calender => {
   const properties = [
     ['id'],
     ['name'],
@@ -17,20 +17,20 @@ module.exports.mapDesktopCalender = calender => {
     ['imageUrl'],
     ['createdAt'],
     ['updatedAt'],
-    ['desktopCalenderCategoryId', 'categoryId']
+    ['desktopCalendarCategoryId', 'categoryId']
   ];
 
   return map(calender, properties);
 };
 
-// ********* Wall Calender **************
-module.exports.mapWallCalenderCategory = category => {
+// ********* Wall Calendar **************
+module.exports.mapWallCalendarCategory = category => {
   const properties = [['id'], ['name'], ['createdAt'], ['updatedAt']];
 
   return map(category, properties);
 };
 
-module.exports.mapWallCalender = calender => {
+module.exports.mapWallCalendar = calender => {
   const properties = [
     ['id'],
     ['name'],
@@ -40,7 +40,7 @@ module.exports.mapWallCalender = calender => {
     ['imageUrl'],
     ['createdAt'],
     ['updatedAt'],
-    ['wallCalenderCategoryId', 'categoryId']
+    ['wallCalendarCategoryId', 'categoryId']
   ];
 
   return map(calender, properties);

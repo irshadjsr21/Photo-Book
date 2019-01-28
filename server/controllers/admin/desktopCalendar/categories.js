@@ -1,16 +1,16 @@
-const DesktopCalenderCategory = require('../../../models/desktopCalenderCategory');
+const DesktopCalendarCategory = require('../../../models/desktopCalendarCategory');
 const {
   getError,
   getValidationResult,
   getUserInput
 } = require('../../../utils/helperFunctions');
 const {
-  mapDesktopCalenderCategory,
+  mapDesktopCalendarCategory,
   mapAll
 } = require('../../../utils/adminMap');
 
-// Add DesktopCalender Category
-module.exports.postDesktopCalenderCategory = (req, res, next) => {
+// Add DesktopCalendar Category
+module.exports.postDesktopCalendarCategory = (req, res, next) => {
   const properties = [['name']];
 
   const userInput = getUserInput(req, properties);
@@ -21,14 +21,14 @@ module.exports.postDesktopCalenderCategory = (req, res, next) => {
     throw getError(422, 'Invalid Input', errors);
   }
 
-  // Crate new DesktopCalender Category
-  const desktopCalenderCategory = new DesktopCalenderCategory(userInput);
+  // Crate new DesktopCalendar Category
+  const desktopCalendarCategory = new DesktopCalendarCategory(userInput);
 
-  desktopCalenderCategory
+  desktopCalendarCategory
     .save()
     .then(() => {
       res.json({
-        category: mapDesktopCalenderCategory(desktopCalenderCategory)
+        category: mapDesktopCalendarCategory(desktopCalendarCategory)
       });
     })
     .catch(error => {
@@ -36,13 +36,13 @@ module.exports.postDesktopCalenderCategory = (req, res, next) => {
     });
 };
 
-// Returns DesktopCalender Categories
-module.exports.getDesktopCalenderCategory = (req, res, next) => {
-  // Find All DesktopCalender Categories
-  DesktopCalenderCategory.findAll()
+// Returns DesktopCalendar Categories
+module.exports.getDesktopCalendarCategory = (req, res, next) => {
+  // Find All DesktopCalendar Categories
+  DesktopCalendarCategory.findAll()
     .then(categories => {
       res.json({
-        categories: mapAll(categories, mapDesktopCalenderCategory)
+        categories: mapAll(categories, mapDesktopCalendarCategory)
       });
     })
     .catch(error => {
@@ -50,22 +50,22 @@ module.exports.getDesktopCalenderCategory = (req, res, next) => {
     });
 };
 
-// Deletes DesktopCalender Category
-module.exports.deleteDesktopCalenderCategory = (req, res, next) => {
+// Deletes DesktopCalendar Category
+module.exports.deleteDesktopCalendarCategory = (req, res, next) => {
   const id = req.params.id;
 
-  // Find DesktopCalender Category
-  DesktopCalenderCategory.findByPk(id)
+  // Find DesktopCalendar Category
+  DesktopCalendarCategory.findByPk(id)
     .then(category => {
       if (!category) {
-        throw getError(404, 'No Desktop Calender Category Found');
+        throw getError(404, 'No Desktop Calendar Category Found');
       }
 
       category
         .destroy()
         .then(() => {
           res.json({
-            msg: ['Desktop Calender Category Deleted Successfully']
+            msg: ['Desktop Calendar Category Deleted Successfully']
           });
         })
         .catch(error => {
@@ -77,8 +77,8 @@ module.exports.deleteDesktopCalenderCategory = (req, res, next) => {
     });
 };
 
-// Edit DesktopCalender Category
-module.exports.putDesktopCalenderCategory = (req, res, next) => {
+// Edit DesktopCalendar Category
+module.exports.putDesktopCalendarCategory = (req, res, next) => {
   const id = req.params.id;
 
   const properties = [['name']];
@@ -91,11 +91,11 @@ module.exports.putDesktopCalenderCategory = (req, res, next) => {
     throw getError(422, 'Invalid Input', errors);
   }
 
-  // Find DesktopCalender Category
-  DesktopCalenderCategory.findByPk(id)
+  // Find DesktopCalendar Category
+  DesktopCalendarCategory.findByPk(id)
     .then(category => {
       if (!category) {
-        throw getError(404, 'No Desktop Calender Category Found');
+        throw getError(404, 'No Desktop Calendar Category Found');
       }
 
       for (const key in userInput) {
@@ -106,7 +106,7 @@ module.exports.putDesktopCalenderCategory = (req, res, next) => {
     })
     .then(category => {
       res.json({
-        category: mapDesktopCalenderCategory(category)
+        category: mapDesktopCalendarCategory(category)
       });
     })
     .catch(error => {

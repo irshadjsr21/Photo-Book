@@ -17,10 +17,10 @@ const Mug = require('./models/mug');
 const MugCategory = require('./models/mugCategory');
 const Gallary = require('./models/gallary');
 const Address = require('./models/address');
-const DesktopCalenderCategory = require('./models/desktopCalenderCategory');
-const DesktopCalender = require('./models/desktopCalender');
-const WallCalenderCategory = require('./models/wallCalenderCategory');
-const WallCalender = require('./models/wallCalender');
+const DesktopCalendarCategory = require('./models/desktopCalendarCategory');
+const DesktopCalendar = require('./models/desktopCalendar');
+const WallCalendarCategory = require('./models/wallCalendarCategory');
+const WallCalendar = require('./models/wallCalendar');
 const PhotoBookCategory = require('./models/photoBookCategory');
 const PhotoBook = require('./models/photoBook');
 const MobileCoverBrand = require('./models/mobileCoverBrand');
@@ -66,11 +66,11 @@ const adminAuthRouter = require('./routes/admin/auth');
 const adminMugCategoryRouter = require('./routes/admin/mugs/categories');
 const adminMugRouter = require('./routes/admin/mugs/product');
 
-const adminDesktopCalenderCategoryRouter = require('./routes/admin/desktopCalender/categories');
-const adminDesktopCalenderRouter = require('./routes/admin/desktopCalender/product');
+const adminDesktopCalendarCategoryRouter = require('./routes/admin/desktopCalendar/categories');
+const adminDesktopCalendarRouter = require('./routes/admin/desktopCalendar/product');
 
-const adminWallCalenderCategoryRouter = require('./routes/admin/wallCalender/categories');
-const adminWallCalenderRouter = require('./routes/admin/wallCalender/product');
+const adminWallCalendarCategoryRouter = require('./routes/admin/wallCalendar/categories');
+const adminWallCalendarRouter = require('./routes/admin/wallCalendar/product');
 
 const adminPhotoBookCategoryRouter = require('./routes/admin/photoBook/categories');
 const adminPhotoBookRouter = require('./routes/admin/photoBook/product');
@@ -101,7 +101,7 @@ const photoBookCartRouter = require('./routes/cart/photoBookCart');
 // ***************** Products ************************
 const mugRouter = require('./routes/products/mug');
 const photoBookRouter = require('./routes/products/photoBook');
-const desktopCalenderRouter = require('./routes/products/desktopCalender');
+const desktopCalendarRouter = require('./routes/products/desktopCalendar');
 
 // *
 // *
@@ -129,30 +129,30 @@ app.use(
 
 app.use('/api/admin/mug', authenticator('admin'), adminMugRouter);
 
-// Desktop Calender
+// Desktop Calendar
 app.use(
-  '/api/admin/desktop-calender/category',
+  '/api/admin/desktop-calendar/category',
   authenticator('admin'),
-  adminDesktopCalenderCategoryRouter
+  adminDesktopCalendarCategoryRouter
 );
 
 app.use(
-  '/api/admin/desktop-calender',
+  '/api/admin/desktop-calendar',
   authenticator('admin'),
-  adminDesktopCalenderRouter
+  adminDesktopCalendarRouter
 );
 
-// Wall Calender
+// Wall Calendar
 app.use(
-  '/api/admin/wall-calender/category',
+  '/api/admin/wall-calendar/category',
   authenticator('admin'),
-  adminWallCalenderCategoryRouter
+  adminWallCalendarCategoryRouter
 );
 
 app.use(
-  '/api/admin/wall-calender',
+  '/api/admin/wall-calendar',
   authenticator('admin'),
-  adminWallCalenderRouter
+  adminWallCalendarRouter
 );
 
 // Photo Book
@@ -207,9 +207,9 @@ app.use('/api/cart/photo-book', authenticator(), photoBookCartRouter);
 app.use('/api/products/mug', authenticator(), mugRouter);
 app.use('/api/products/photo-book', authenticator(), photoBookRouter);
 app.use(
-  '/api/products/desktop-calender',
+  '/api/products/desktop-calendar',
   authenticator(),
-  desktopCalenderRouter
+  desktopCalendarRouter
 );
 
 // Page not Found Error
@@ -237,8 +237,8 @@ app.use((error, req, res, next) => {
 
 // Database Relations
 Mug.belongsTo(MugCategory, { onDelete: 'CASCADE' });
-DesktopCalender.belongsTo(DesktopCalenderCategory, { onDelete: 'CASCADE' });
-WallCalender.belongsTo(WallCalenderCategory, { onDelete: 'CASCADE' });
+DesktopCalendar.belongsTo(DesktopCalendarCategory, { onDelete: 'CASCADE' });
+WallCalendar.belongsTo(WallCalendarCategory, { onDelete: 'CASCADE' });
 PhotoBook.belongsTo(PhotoBookCategory, { onDelete: 'CASCADE' });
 MobileCoverModel.belongsTo(MobileCoverBrand, { onDelete: 'CASCADE' });
 MobileCover.belongsTo(MobileCoverModel, { onDelete: 'CASCADE' });

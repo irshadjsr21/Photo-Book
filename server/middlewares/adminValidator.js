@@ -96,8 +96,8 @@ module.exports.putMug = [
     .withMessage('Invalid Black Offer Price')
 ];
 
-// ******* Desktop Calender **********
-module.exports.desktopCalenderCategory = [
+// ******* Desktop Calendar **********
+module.exports.desktopCalendarCategory = [
   body('name')
     .escape()
     .not()
@@ -105,7 +105,7 @@ module.exports.desktopCalenderCategory = [
     .withMessage('Name is Required')
 ];
 
-module.exports.postDesktopCalender = [
+module.exports.postDesktopCalendar = [
   body('name')
     .escape()
     .not()
@@ -123,7 +123,7 @@ module.exports.postDesktopCalender = [
     .withMessage('Invalid Offer Price')
 ];
 
-module.exports.putDesktopCalender = [
+module.exports.putDesktopCalendar = [
   body('name').escape(),
   body('price')
     .optional()
@@ -139,8 +139,8 @@ module.exports.putDesktopCalender = [
     .withMessage('Invalid Offer Price')
 ];
 
-// ********** Wall Calender *********
-module.exports.wallCalenderCategory = [
+// ********** Wall Calendar *********
+module.exports.wallCalendarCategory = [
   body('name')
     .escape()
     .not()
@@ -148,7 +148,7 @@ module.exports.wallCalenderCategory = [
     .withMessage('Name is Required')
 ];
 
-module.exports.postWallCalender = [
+module.exports.postWallCalendar = [
   body('name')
     .escape()
     .not()
@@ -166,7 +166,7 @@ module.exports.postWallCalender = [
     .withMessage('Invalid Offer Price')
 ];
 
-module.exports.putWallCalender = [
+module.exports.putWallCalendar = [
   body('name').escape(),
   body('price')
     .optional()

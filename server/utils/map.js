@@ -60,8 +60,8 @@ module.exports.mapPhotoBook = photoBook => {
   return module.exports.map(photoBook, properties);
 };
 
-// ************** Desktop Calender *****************
-module.exports.mapDesktopCalender = desktopCalender => {
+// ************** Desktop Calendar *****************
+module.exports.mapDesktopCalendar = desktopCalendar => {
   const properties = [
     ['id'],
     ['name'],
@@ -69,13 +69,13 @@ module.exports.mapDesktopCalender = desktopCalender => {
     ['stock'],
     ['offerPrice'],
     ['imageUrl'],
-    ['desktopCalenderCategoryId', 'categoryId']
+    ['desktopCalendarCategoryId', 'categoryId']
   ];
 
-  return module.exports.map(desktopCalender, properties);
+  return module.exports.map(desktopCalendar, properties);
 };
 
-module.exports.mapDesktopCalenderCategory = category => {
+module.exports.mapDesktopCalendarCategory = category => {
   const properties = [['id'], ['name']];
 
   return module.exports.map(category, properties);
